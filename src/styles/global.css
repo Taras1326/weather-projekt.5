@@ -1,0 +1,111 @@
+
+/* ========================================
+   GLOBAL
+======================================== */
+
+* {
+  box-sizing: border-box;
+}
+
+html {
+  scroll-behavior: smooth;
+}
+
+body {
+  margin: 0;
+  padding: 0;
+
+  font-family:
+    Arial,
+    Helvetica,
+    sans-serif;
+
+  color: #222;
+
+  background: #fff;
+}
+
+button,
+input,
+select,
+textarea {
+  font: inherit;
+}
+
+button {
+  cursor: pointer;
+}
+
+img {
+  max-width: 100%;
+  display: block;
+}
+
+a {
+  color: inherit;
+}
+
+
+/* ========================================
+   COMMON CONTAINER
+======================================== */
+
+.container {
+  width: 100%;
+
+  max-width: 1160px;
+
+  margin: 0 auto;
+
+  padding-left: 10px;
+  padding-right: 10px;
+}
+
+
+/* ========================================
+   MAIN
+======================================== */
+
+main {
+  width: 100%;
+}
+
+
+/* ========================================
+   SECTION TITLES
+======================================== */
+
+section h2 {
+  margin-top: 0;
+}
+
+
+/* ========================================
+   TABLET
+   768px+
+======================================== */
+
+@media (max-width: 1199px) {
+  .container {
+    max-width: 564px;
+
+    padding-left: 10px;
+    padding-right: 10px;
+  }
+}
+
+
+/* ========================================
+   MOBILE
+   до 767px
+======================================== */
+
+@media (max-width: 767px) {
+  .container {
+    max-width: 313px;
+
+    padding-left: 10px;
+    padding-right: 10px;
+  }
+}
+

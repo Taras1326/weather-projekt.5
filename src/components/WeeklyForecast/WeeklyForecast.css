@@ -1,0 +1,114 @@
+.weekly-forecast {
+    width: 100%;
+    padding: 30px 20px;
+    background: #fff;
+  }
+  
+  .weekly-forecast-container {
+    width: 100%;
+    padding: 25px;
+  
+    border-radius: 15px;
+  
+    background: #e9e9e9;
+  }
+  
+  .weekly-forecast-title {
+    margin: 0 0 20px;
+  
+    font-size: 22px;
+  }
+  
+  .weekly-list {
+    display: grid;
+  
+    grid-template-columns: repeat(7, 1fr);
+  
+    gap: 8px;
+  }
+  
+  .weekly-card {
+    min-height: 170px;
+  
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+  
+    padding: 10px 5px;
+  
+    border-radius: 10px;
+  
+    background: #fff;
+  
+    text-align: center;
+  }
+  
+  .weekly-day {
+    margin: 0;
+  
+    font-size: 13px;
+    font-weight: 600;
+  }
+  
+  .weekly-date {
+    margin: 4px 0;
+  
+    font-size: 9px;
+  }
+  
+  .weekly-icon {
+    width: 50px;
+    height: 50px;
+  
+    object-fit: contain;
+  
+    margin: 5px 0;
+  }
+  
+  .weekly-max {
+    font-size: 18px;
+  }
+  
+  .weekly-min {
+    margin-top: 2px;
+  
+    font-size: 12px;
+  
+    opacity: 0.6;
+  }
+  
+  .weekly-description {
+    margin: 7px 0 0;
+  
+    font-size: 8px;
+  }
+  
+  /* TABLET */
+  
+  @media (max-width: 767px) {
+    .weekly-forecast-container {
+      width: 100%;
+    }
+  
+    .weekly-list {
+      grid-template-columns: repeat(4, 1fr);
+  
+      gap: 10px;
+    }
+  }
+  
+  /* MOBILE */
+  
+  @media (max-width: 480px) {
+    .weekly-forecast {
+      padding: 20px 15px;
+    }
+  
+    .weekly-forecast-container {
+      padding: 15px;
+    }
+  
+    .weekly-list {
+      grid-template-columns: repeat(2, 1fr);
+    }
+  }

@@ -1,0 +1,1019 @@
+/* ========================================
+   HEADER
+======================================== */
+
+.header {
+    width: 100%;
+    height: 76px;
+  
+    background: #ffffff;
+    border-bottom: 1px solid #eeeeee;
+  
+    position: relative;
+    z-index: 100;
+  }
+  
+  .header-container {
+    width: 100%;
+    max-width: 1200px;
+    height: 100%;
+  
+    margin: 0 auto;
+    padding: 0 20px;
+  
+    box-sizing: border-box;
+  
+    display: flex;
+    align-items: center;
+  }
+  
+  
+  /* ========================================
+     LOGO
+  ======================================== */
+  
+  .header-logo {
+    flex-shrink: 0;
+  
+    display: flex;
+    align-items: center;
+  
+    color: #111111;
+    text-decoration: none;
+  }
+  
+  .header-logo img {
+    display: block;
+  
+    width: 50px;
+    height: auto;
+  
+    object-fit: contain;
+  }
+  
+  
+  /* ========================================
+     NAVIGATION
+  ======================================== */
+  
+  .navigation {
+    display: flex;
+    align-items: center;
+  
+    gap: 35px;
+  
+    margin-left: 55px;
+  }
+  
+  .navigation a {
+    color: #111111;
+  
+    text-decoration: none;
+  
+    font-size: 12px;
+    font-weight: 400;
+  
+    transition: color 0.2s ease;
+  }
+  
+  .navigation a:hover {
+    color: #ff9b45;
+  }
+  
+  
+  /* ========================================
+     HEADER ACTIONS
+  ======================================== */
+  
+  .header-actions {
+    display: flex;
+    align-items: center;
+  
+    gap: 15px;
+  
+    margin-left: auto;
+  }
+  
+  
+  /* ========================================
+     SIGN UP BUTTON
+  ======================================== */
+  
+  .signup-button {
+    min-width: 90px;
+    height: 36px;
+  
+    padding: 0 16px;
+  
+    border: none;
+    border-radius: 8px;
+  
+    background: #ffb366;
+  
+    color: #222222;
+  
+    font-size: 11px;
+    font-weight: 600;
+  
+    cursor: pointer;
+  
+    transition:
+      background 0.2s ease,
+      transform 0.2s ease;
+  }
+  
+  .signup-button:hover {
+    background: #ffa24d;
+  
+    transform: translateY(-2px);
+  }
+  
+  
+  /* ========================================
+     USER WRAPPER
+  ======================================== */
+  
+  .user-wrapper {
+    position: relative;
+  }
+  
+  
+  /* ========================================
+     USER NAME
+  ======================================== */
+  
+  .user-name {
+    border: none;
+  
+    padding: 8px 5px;
+  
+    background: transparent;
+  
+    color: #222222;
+  
+    font-size: 12px;
+    font-weight: 600;
+  
+    cursor: pointer;
+  
+    transition: color 0.2s ease;
+  }
+  
+  .user-name:hover {
+    color: #ff9b45;
+  }
+  
+  
+  /* ========================================
+     AVATAR
+  ======================================== */
+  
+  .avatar-button {
+    width: 36px;
+    height: 36px;
+  
+    flex-shrink: 0;
+  
+    display: grid;
+    place-items: center;
+  
+    padding: 0;
+  
+    border: none;
+    border-radius: 50%;
+  
+    background: #e8edf7;
+  
+    color: #596a8e;
+  
+    font-size: 20px;
+  
+    cursor: pointer;
+  
+    transition:
+      background 0.2s ease,
+      transform 0.2s ease;
+  }
+  
+  .avatar-button:hover {
+    background: #dce3f2;
+  
+    transform: scale(1.05);
+  }
+  
+  
+  /* ========================================
+     USER MENU
+  ======================================== */
+  
+  .user-menu {
+    position: absolute;
+  
+    top: calc(100% + 12px);
+    right: 0;
+  
+    width: 230px;
+  
+    padding: 15px;
+  
+    border-radius: 14px;
+  
+    background: #ffffff;
+  
+    box-shadow:
+      0 10px 30px rgba(0, 0, 0, 0.15);
+  
+    z-index: 200;
+  }
+  
+  
+  /* ========================================
+     USER MENU INFO
+  ======================================== */
+  
+  .user-menu-info {
+    display: flex;
+    align-items: center;
+  
+    gap: 10px;
+  
+    padding-bottom: 14px;
+  
+    border-bottom: 1px solid #eeeeee;
+  }
+  
+  .user-menu-info > svg {
+    width: 36px;
+    height: 36px;
+  
+    flex-shrink: 0;
+  
+    padding: 8px;
+  
+    box-sizing: border-box;
+  
+    border-radius: 50%;
+  
+    background: #e8edf7;
+  
+    color: #596a8e;
+  }
+  
+  .user-menu-info div {
+    min-width: 0;
+  
+    display: flex;
+    flex-direction: column;
+  
+    gap: 3px;
+  }
+  
+  .user-menu-info strong {
+    overflow: hidden;
+  
+    color: #222222;
+  
+    font-size: 13px;
+  
+    text-overflow: ellipsis;
+    white-space: nowrap;
+  }
+  
+  .user-menu-info span {
+    overflow: hidden;
+  
+    color: #888888;
+  
+    font-size: 10px;
+  
+    text-overflow: ellipsis;
+    white-space: nowrap;
+  }
+  
+  
+  /* ========================================
+     LOG OUT
+  ======================================== */
+  
+  .logout-button {
+    width: 100%;
+  
+    display: flex;
+    align-items: center;
+    justify-content: center;
+  
+    gap: 8px;
+  
+    margin-top: 12px;
+  
+    padding: 9px;
+  
+    border: none;
+    border-radius: 8px;
+  
+    background: #f3f3f3;
+  
+    color: #333333;
+  
+    font-size: 12px;
+  
+    cursor: pointer;
+  
+    transition:
+      background 0.2s ease,
+      color 0.2s ease;
+  }
+  
+  .logout-button:hover {
+    background: #ffb366;
+  
+    color: #222222;
+  }
+  
+  .logout-button svg {
+    width: 15px;
+    height: 15px;
+  }
+  
+  
+  /* ========================================
+     MOBILE MENU BUTTON
+  ======================================== */
+  
+  .mobile-menu-button {
+    display: none;
+  
+    align-items: center;
+    justify-content: center;
+  
+    gap: 7px;
+  
+    padding: 0;
+  
+    border: none;
+  
+    background: transparent;
+  
+    color: #222222;
+  
+    font-family: inherit;
+    font-size: 12px;
+    font-weight: 400;
+  
+    cursor: pointer;
+  }
+  
+  .mobile-menu-arrow {
+    font-size: 17px;
+    line-height: 1;
+  
+    transform: translateY(-1px);
+  }
+  
+  
+  /* ========================================
+     MODAL BACKDROP
+  ======================================== */
+  
+  .modal-backdrop {
+    position: fixed;
+  
+    inset: 0;
+  
+    z-index: 1000;
+  
+    display: flex;
+    align-items: center;
+    justify-content: center;
+  
+    padding: 20px;
+  
+    box-sizing: border-box;
+  
+    background: rgba(32, 32, 32, 0.75);
+  }
+  
+  
+  /* ========================================
+     SIGN UP MODAL
+  ======================================== */
+  
+  .signup-modal {
+    position: relative;
+  
+    width: min(710px, 100%);
+  
+    min-height: 630px;
+  
+    padding: 34px 94px 28px;
+  
+    box-sizing: border-box;
+  
+    border-radius: 30px;
+  
+    background: #ffffff;
+  }
+  
+  .signup-modal h2 {
+    margin: 0 0 48px;
+  
+    text-align: center;
+  
+    color: #222222;
+  
+    font-size: 32px;
+    font-weight: 400;
+  }
+  
+  
+  /* ========================================
+     CLOSE BUTTON
+  ======================================== */
+  
+  .modal-close {
+    position: absolute;
+  
+    top: 20px;
+    right: 25px;
+  
+    display: grid;
+    place-items: center;
+  
+    width: 32px;
+    height: 32px;
+  
+    padding: 0;
+  
+    border: none;
+  
+    background: transparent;
+  
+    color: #222222;
+  
+    font-size: 25px;
+  
+    cursor: pointer;
+  }
+  
+  
+  /* ========================================
+     FORM
+  ======================================== */
+  
+  .signup-form {
+    display: flex;
+    flex-direction: column;
+  }
+  
+  .signup-form label {
+    margin-bottom: 16px;
+  
+    color: #222222;
+  
+    font-size: 17px;
+  }
+  
+  .signup-form input {
+    width: 100%;
+    height: 59px;
+  
+    box-sizing: border-box;
+  
+    margin-bottom: 36px;
+  
+    padding: 0 24px;
+  
+    border: none;
+    border-radius: 12px;
+  
+    outline: none;
+  
+    background: #e4e4e4;
+  
+    color: #222222;
+  
+    font-size: 16px;
+  }
+  
+  .signup-form input::placeholder {
+    color: #aaaaaa;
+  }
+  
+  .signup-form input:focus {
+    outline: 2px solid #ffb366;
+  }
+  
+  
+  /* ========================================
+     SAVE BUTTON
+  ======================================== */
+  
+  .save-button {
+    width: 135px;
+    height: 44px;
+  
+    align-self: center;
+  
+    margin-top: 5px;
+  
+    border: none;
+    border-radius: 11px;
+  
+    background: #ffb366;
+  
+    color: #222222;
+  
+    font-size: 16px;
+  
+    cursor: pointer;
+  
+    transition:
+      background 0.2s ease,
+      transform 0.2s ease;
+  }
+  
+  .save-button:hover {
+    background: #ffa653;
+  
+    transform: translateY(-2px);
+  }
+  
+  
+  /* ========================================
+     LOGIN
+  ======================================== */
+  
+  .login-text {
+    margin: 18px 0 0;
+  
+    color: #333333;
+  
+    text-align: center;
+  
+    font-size: 13px;
+  }
+  
+  .login-text button {
+    padding: 0;
+  
+    border: none;
+  
+    background: transparent;
+  
+    color: #222222;
+  
+    text-decoration: underline;
+  
+    font-size: inherit;
+  
+    cursor: pointer;
+  }
+  
+  
+  /* ========================================
+     TABLET
+     768px — 1199px
+  ======================================== */
+  
+  @media (max-width: 1199px) {
+  
+    .header-container {
+      max-width: 100%;
+      padding: 0 20px;
+    }
+  
+    .navigation {
+      gap: 25px;
+  
+      margin-left: 40px;
+    }
+  
+    .navigation a {
+      font-size: 11px;
+    }
+  
+  }
+  
+  
+  /* ========================================
+     SMALL TABLET
+     768px — 767px
+  ======================================== */
+  
+  @media (max-width: 767px) {
+  
+    .header {
+      height: 68px;
+    }
+  
+    .header-container {
+      height: 68px;
+  
+      padding: 0 18px;
+    }
+  
+    .header-logo img {
+      width: 45px;
+    }
+  
+    .navigation {
+      gap: 14px;
+  
+      margin-left: 25px;
+    }
+  
+    .navigation a {
+      font-size: 10px;
+    }
+  
+    .header-actions {
+      gap: 8px;
+    }
+  
+    .signup-button {
+      min-width: 75px;
+  
+      height: 34px;
+  
+      padding: 0 11px;
+  
+      font-size: 10px;
+    }
+  
+    .avatar-button {
+      width: 32px;
+      height: 32px;
+  
+      font-size: 18px;
+    }
+  
+  
+    /* ========================================
+       MODAL — TABLET
+    ======================================== */
+  
+    .modal-backdrop {
+      padding: 18px;
+    }
+  
+    .signup-modal {
+      width: 100%;
+  
+      min-height: auto;
+  
+      padding: 30px 28px 25px;
+  
+      border-radius: 28px;
+    }
+  
+    .signup-modal h2 {
+      margin-bottom: 35px;
+  
+      font-size: 28px;
+    }
+  
+    .signup-form label {
+      font-size: 16px;
+    }
+  
+    .signup-form input {
+      height: 55px;
+  
+      margin-bottom: 28px;
+    }
+  
+  }
+  
+  
+  /* ========================================
+     MOBILE
+     320px — 480px
+  ======================================== */
+  
+  @media (max-width: 480px) {
+  
+    /* ========================================
+       HEADER
+    ======================================== */
+  
+    .header {
+      width: 100%;
+      height: 54px;
+  
+      background: #ffffff;
+  
+      border-bottom: 1px solid #eeeeee;
+    }
+  
+    .header-container {
+      width: 100%;
+      height: 54px;
+  
+      padding: 0 24px;
+  
+      box-sizing: border-box;
+  
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+    }
+  
+  
+    /* ========================================
+       LOGO
+    ======================================== */
+  
+    .header-logo {
+      display: flex;
+      align-items: center;
+  
+      margin: 0;
+  
+      width: auto;
+      height: auto;
+    }
+  
+    .header-logo img {
+      display: block;
+  
+      width: 42px;
+      height: auto;
+  
+      object-fit: contain;
+    }
+  
+  
+    /* ========================================
+       HIDE DESKTOP NAVIGATION
+    ======================================== */
+  
+    .navigation {
+      display: none;
+    }
+  
+  
+    /* ========================================
+       HIDE DESKTOP ACTIONS
+    ======================================== */
+  
+    .header-actions {
+      display: none;
+    }
+  
+  
+    /* ========================================
+       SHOW MOBILE MENU
+    ======================================== */
+  
+    .mobile-menu-button {
+      display: flex;
+    }
+  
+  
+    /* ========================================
+       MOBILE USER MENU
+    ======================================== */
+  
+    .user-menu {
+      right: -5px;
+  
+      width: 210px;
+    }
+  
+  
+    /* ========================================
+       MODAL
+    ======================================== */
+  
+    .modal-backdrop {
+      padding: 12px;
+    }
+  
+    .signup-modal {
+      width: 100%;
+  
+      min-height: auto;
+  
+      padding: 28px 20px 22px;
+  
+      border-radius: 22px;
+    }
+  
+    .signup-modal h2 {
+      margin-bottom: 28px;
+  
+      font-size: 25px;
+    }
+  
+    .modal-close {
+      top: 12px;
+      right: 14px;
+  
+      font-size: 22px;
+    }
+  
+    .signup-form label {
+      margin-bottom: 10px;
+  
+      font-size: 14px;
+    }
+  
+    .signup-form input {
+      height: 50px;
+  
+      margin-bottom: 22px;
+  
+      padding: 0 16px;
+  
+      font-size: 14px;
+    }
+  
+    .save-button {
+      width: 125px;
+      height: 40px;
+  
+      font-size: 14px;
+    }
+  
+    .login-text {
+      font-size: 11px;
+    }
+  
+  }
+  
+  
+  /* ========================================
+     VERY SMALL MOBILE
+     320px — 360px
+  ======================================== */
+  
+  @media (max-width: 360px) {
+  
+    .header-container {
+      padding: 0 18px;
+    }
+  
+    .header-logo img {
+      width: 40px;
+    }
+  
+    .mobile-menu-button {
+      font-size: 11px;
+    }
+  
+    .mobile-menu-arrow {
+      font-size: 15px;
+    }
+  
+  }
+
+
+
+
+  /* ========================================
+   MOBILE MENU PANEL
+======================================== */
+
+.mobile-menu-panel {
+    display: none;
+  }
+  
+  
+  /* ========================================
+     MOBILE
+  ======================================== */
+  
+  @media (max-width: 480px) {
+  
+    .mobile-menu-panel {
+      position: absolute;
+  
+      top: 54px;
+      left: 50%;
+  
+      transform: translateX(-50%);
+  
+      width: calc(100% - 48px);
+  
+      min-height: 160px;
+  
+      padding: 28px 24px;
+  
+      box-sizing: border-box;
+  
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+  
+      background: #eeeeee;
+  
+      z-index: 150;
+  
+      box-shadow:
+        0 8px 20px rgba(0, 0, 0, 0.08);
+    }
+  
+  
+    /* NAVIGATION */
+  
+    .mobile-navigation {
+      display: flex;
+      flex-direction: column;
+  
+      gap: 20px;
+    }
+  
+    .mobile-navigation a {
+      color: #222222;
+  
+      text-decoration: none;
+  
+      font-size: 12px;
+      font-weight: 400;
+    }
+  
+    .mobile-navigation a:hover {
+      color: #ff9b45;
+    }
+  
+  
+    /* ACTIONS */
+  
+    .mobile-menu-actions {
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+  
+      gap: 18px;
+    }
+  
+  
+    /* AVATAR */
+  
+    .mobile-avatar {
+      width: 40px;
+      height: 40px;
+  
+      display: grid;
+      place-items: center;
+  
+      border-radius: 50%;
+  
+      background: #596a8e;
+  
+      color: #ffffff;
+  
+      font-size: 22px;
+    }
+  
+  
+    /* SIGN UP */
+  
+    .mobile-signup-button {
+      min-width: 80px;
+      height: 32px;
+  
+      padding: 0 15px;
+  
+      border: none;
+      border-radius: 9px;
+  
+      background: #ffb366;
+  
+      color: #222222;
+  
+      font-size: 11px;
+  
+      cursor: pointer;
+    }
+  
+  
+    /* USER */
+  
+    .mobile-user-name {
+      border: none;
+  
+      background: transparent;
+  
+      color: #222222;
+  
+      font-size: 11px;
+  
+      cursor: pointer;
+    }
+  
+  
+    /* ARROW */
+  
+    .mobile-menu-icon {
+      width: 14px;
+      height: 14px;
+  
+      transition: transform 0.2s ease;
+    }
+  
+    .mobile-menu-icon-open {
+      transform: rotate(180deg);
+    }
+  
+  }

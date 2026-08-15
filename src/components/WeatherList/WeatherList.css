@@ -1,0 +1,63 @@
+.weather-list-section {
+    padding: 40px 0 55px;
+  
+    background: #fff;
+  }
+  
+  .weather-list {
+    width: 762px;
+  
+    display: grid;
+    grid-template-columns: repeat(3, 218px);
+  
+    justify-content: space-between;
+  
+    margin: 0 auto;
+  }
+
+
+  .weather-empty {
+    min-height: 180px;
+  
+    display: flex;
+    align-items: center;
+    justify-content: center;
+  
+    text-align: center;
+  }
+  
+  .weather-empty p {
+    max-width: 400px;
+  
+    margin: 0;
+  
+    font-size: 15px;
+  }
+  
+  /* TABLET */
+  
+  @media (max-width: 767px) {
+    .weather-list-section {
+      padding: 30px 20px;
+    }
+  
+    .weather-list {
+      width: 100%;
+  
+      grid-template-columns: repeat(2, 200px);
+  
+      justify-content: center;
+  
+      gap: 25px;
+    }
+  }
+  
+  /* MOBILE */
+  
+  @media (max-width: 480px) {
+    .weather-list {
+      grid-template-columns: 1fr;
+  
+      justify-items: center;
+    }
+  }
