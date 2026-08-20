@@ -1,4 +1,4 @@
-const API_KEY = '0ad651487453424da3d937bfd2b9f4d9';
+const API_KEY = import.meta.env.VITE_NEWS_API_KEY || '';
 
 export const fetchNews = async () => {
   const response = await fetch(

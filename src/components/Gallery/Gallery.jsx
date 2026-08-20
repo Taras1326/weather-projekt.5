@@ -17,7 +17,7 @@ import 'swiper/css/pagination';
 
 import './Gallery.css';
 
-const API_KEY = '54251385-6f7a6e7accba74a4972a9b1fa';
+const API_KEY = import.meta.env.VITE_PIXABAY_API_KEY || '';
 
 function Gallery() {
   const [images, setImages] = useState([]);
