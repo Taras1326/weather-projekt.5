@@ -1,16 +1,41 @@
-# React + Vite
+# 24/7 Forecast
 
-This template provides a minimal setup to get React working in Vite with HMR and some ESLint rules.
+A portfolio-ready React + Vite weather application based on the original Figma direction: orange accents, light grey weather cards, a photographic hero, dashboard metrics and editorial nature content.
 
-Currently, two official plugins are available:
+## Features
 
-- [@vitejs/plugin-react](https://github.com/vitejs/vite-plugin-react/blob/main/packages/plugin-react) uses [Oxc](https://oxc.rs)
-- [@vitejs/plugin-react-swc](https://github.com/vitejs/vite-plugin-react/blob/main/packages/plugin-react-swc) uses [SWC](https://swc.rs/)
+- Live weather powered by Open-Meteo (no API key required)
+- City autocomplete and geolocation
+- Saved cities, favourites and refresh/delete controls
+- Light / dark theme
+- °C / °F toggle
+- Current conditions, UV, AQI, PM2.5, wind gusts, visibility, pressure, rain chance, sunrise and sunset
+- 12 / 24 / 48 hour forecast with chart
+- 14-day forecast
+- Smart comfort / umbrella / clothing tips
+- Interactive Weather Map page
+- Travel Planner page with side-by-side city comparison and trip score
+- Responsive mobile/tablet layout
+- PWA manifest + service worker + favicon
+- GitHub Pages-ready Vite base path
 
-## React Compiler
+## Run locally
 
-The React Compiler is not enabled on this template because of its impact on dev & build performances. To add it, see [this documentation](https://react.dev/learn/react-compiler/installation).
+```bash
+npm install
+npm run dev
+```
 
-## Expanding the ESLint configuration
+## Production build
 
-If you are developing a production application, we recommend using TypeScript with type-aware lint rules enabled. Check out the [TS template](https://github.com/vitejs/vite/tree/main/packages/create-vite/template-react-ts) for information on how to integrate TypeScript and [`typescript-eslint`](https://typescript-eslint.io) in your project.
+```bash
+npm run build
+```
+
+## Deploy
+
+```bash
+npm run deploy
+```
+
+Weather data: Open-Meteo. Map embed: Windy. Editorial images: Unsplash.

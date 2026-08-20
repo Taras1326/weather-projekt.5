@@ -1,41 +1,183 @@
 import { useEffect, useMemo, useState } from 'react';
-import { FiMapPin, FiSearch, FiNavigation, FiDroplet, FiWind, FiSun, FiEye, FiActivity, FiCloudRain, FiMoon, FiTrash2, FiRefreshCw, FiHeart } from 'react-icons/fi';
-import { getWeatherByCity, getWeatherByCoordinates, searchCities, weatherEmoji } from './services/weatherApi';
+import Header from './components/Header/Header';
+import Hero from './components/Hero/Hero';
+import WeatherList from './components/WeatherList/WeatherList';
+import WeatherDetails from './components/WeatherDetails/WeatherDetails';
+import HourlyForecast from './components/HourlyForecast/HourlyForecast';
+import WeeklyForecast from './components/WeeklyForecast/WeeklyForecast';
+import ComfortAdvice from './components/ComfortAdvice/ComfortAdvice';
+import News from './components/News/News';
+import Gallery from './components/Gallery/Gallery';
+import Footer from './components/Footer/Footer';
+import MapPage from './pages/MapPage/MapPage';
+import TravelPage from './pages/TravelPage/TravelPage';
+import { getWeatherByCity, getWeatherByCoords } from './services/weatherApi';
 import { getSavedCities, saveCities } from './services/storage';
 import './styles/global.css';
 
-const formatTime = (value) => value ? new Date(value).toLocaleTimeString([], {hour:'2-digit', minute:'2-digit'}) : '—';
-const dir = d => ['N','NE','E','SE','S','SW','W','NW'][Math.round((d||0)/45)%8];
+const THEME_KEY = 'weather-theme';
+const UNIT_KEY = 'weather-unit';
+const FAVORITES_KEY = 'weather-favorites';
 
-function App(){
- const [city,setCity]=useState(null), [saved,setSaved]=useState([]), [q,setQ]=useState(''), [suggestions,setSuggestions]=useState([]), [loading,setLoading]=useState(false), [error,setError]=useState(''), [dark,setDark]=useState(()=>localStorage.getItem('weather-theme')!=='light');
- useEffect(()=>{document.documentElement.dataset.theme=dark?'dark':'light';localStorage.setItem('weather-theme',dark?'dark':'light')},[dark]);
- useEffect(()=>{const s=getSavedCities(); setSaved(s); if(s[0]) getWeatherByCity(s[0].city).then(setCity).catch(()=>{}); else getWeatherByCity('Ljubljana').then(setCity).catch(()=>{});},[]);
- useEffect(()=>{const t=setTimeout(async()=>{if(q.trim().length<2){setSuggestions([]);return} try{setSuggestions(await searchCities(q))}catch{setSuggestions([])}},250); return()=>clearTimeout(t)},[q]);
- const loadPlace=async(p)=>{setLoading(true);setError('');try{const w=await getWeatherByCoordinates(p.latitude,p.longitude,p);setCity(w);setQ('');setSuggestions([])}catch(e){setError(e.message)}finally{setLoading(false)}};
- const submit=async e=>{e.preventDefault();if(!q.trim())return;setLoading(true);setError('');try{setCity(await getWeatherByCity(q));setQ('');setSuggestions([])}catch(e){setError(e.message)}finally{setLoading(false)}};
- const locate=()=>navigator.geolocation?navigator.geolocation.getCurrentPosition(async pos=>{setLoading(true);try{setCity(await getWeatherByCoordinates(pos.coords.latitude,pos.coords.longitude,{name:'My location'}))}finally{setLoading(false)}},()=>setError('Location permission was not granted.')):setError('Geolocation is not supported.');
- const toggleSave=()=>{if(!city)return;const exists=saved.some(x=>x.id===city.id); const next=exists?saved.filter(x=>x.id!==city.id):[...saved,{id:city.id,city:city.city,country:city.country}];setSaved(next);saveCities(next)};
- const currentHours=useMemo(()=>city?.hourly.filter(h=>new Date(h.time)>=new Date()).slice(0,12)||[],[city]);
- const savedHere=city&&saved.some(x=>x.id===city.id);
- return <div className="app-shell">
-  <header className="topbar"><a className="brand" href="#top"><span className="brand-mark">☁️</span><span>SkyPulse</span></a><nav><a href="#forecast">Forecast</a><a href="#details">Details</a><a href="#saved">Saved</a></nav><button className="theme" onClick={()=>setDark(v=>!v)}>{dark?'☀️':'🌙'}</button></header>
-  <main id="top">
-   <section className="hero"><div className="hero-copy"><span className="eyebrow">LIVE WEATHER • GLOBAL FORECAST</span><h1>Weather that feels <em>clear.</em></h1><p>Current conditions, 14-day forecast, hourly rain, UV, wind, visibility and air quality — in one clean dashboard.</p>
-    <form className="search" onSubmit={submit}><FiSearch/><input value={q} onChange={e=>setQ(e.target.value)} placeholder="Search city or place..."/><button>{loading?'Loading…':'Search'}</button>{suggestions.length>0&&<div className="suggestions">{suggestions.map(s=><button type="button" key={s.id} onClick={()=>loadPlace(s)}><FiMapPin/><span><b>{s.name}</b><small>{[s.admin1,s.country].filter(Boolean).join(', ')}</small></span></button>)}</div>}</form>
-    <button className="locate" onClick={locate}><FiNavigation/> Use my location</button>{error&&<p className="error">{error}</p>}</div>
-    {city&&<div className="now-card"><div className="now-head"><div><span className="label">NOW</span><h2>{city.city}</h2><p>{[city.admin1,city.country].filter(Boolean).join(', ')}</p></div><button className="save" onClick={toggleSave}>{savedHere?<FiHeart fill="currentColor"/>:<FiHeart/>}</button></div><div className="temp-row"><span className="weather-emoji">{city.emoji}</span><strong>{city.temperature}°</strong><div><b>{city.description}</b><span>Feels like {city.feelsLike}°</span></div></div><div className="mini-grid"><div><FiDroplet/><span>Humidity</span><b>{city.humidity}%</b></div><div><FiWind/><span>Wind</span><b>{city.windSpeed} km/h</b></div><div><FiCloudRain/><span>Rain</span><b>{city.precipitation} mm</b></div></div></div>}
-   </section>
-   {city&&<>
-   <section className="section" id="forecast"><div className="section-title"><div><span>HOURLY</span><h2>Next 12 hours</h2></div><small>Updated {formatTime(city.updatedAt)}</small></div><div className="hour-strip">{currentHours.map((h,i)=><article className={i===0?'hour active':'hour'} key={h.time}><span>{i===0?'Now':formatTime(h.time)}</span><i>{weatherEmoji(h.weatherCode,1)}</i><strong>{h.temperature}°</strong><small><FiCloudRain/>{h.precipitationProbability}%</small></article>)}</div></section>
-   <section className="section" id="details"><div className="section-title"><div><span>CONDITIONS</span><h2>Weather details</h2></div></div><div className="detail-grid">{[
-    [<FiSun/>,'UV index',city.uv?.toFixed(1)??'—'],[<FiWind/>,'Wind gusts',`${city.windGusts} km/h`],[<FiNavigation/>,'Wind direction',`${dir(city.windDirection)} ${city.windDirection}°`],[<FiEye/>,'Visibility',city.visibility!=null?`${city.visibility} km`:'—'],[<FiActivity/>,'Pressure',`${city.pressure} hPa`],[<FiDroplet/>,'Humidity',`${city.humidity}%`],[<FiSun/>,'Sunrise',formatTime(city.sunrise)],[<FiMoon/>,'Sunset',formatTime(city.sunset)],[<FiActivity/>,'Air quality',city.aqi!=null?`${city.aqi} • ${city.aqiLabel}`:'Unavailable']
-   ].map(([icon,label,val])=><article className="detail" key={label}><span className="detail-icon">{icon}</span><span>{label}</span><strong>{val}</strong></article>)}</div></section>
-   <section className="section"><div className="section-title"><div><span>OUTLOOK</span><h2>14-day forecast</h2></div></div><div className="daily-list">{city.forecast.map((d,i)=><article className="day" key={d.date}><div><b>{i===0?'Today':new Date(d.date).toLocaleDateString('en-US',{weekday:'short'})}</b><small>{new Date(d.date).toLocaleDateString('en-US',{month:'short',day:'numeric'})}</small></div><i>{weatherEmoji(d.weatherCode,1)}</i><span className="rain"><FiCloudRain/>{d.precipProbability}%</span><span className="wind"><FiWind/>{d.windMax} km/h</span><strong>{d.max}° <em>{d.min}°</em></strong></article>)}</div></section>
-   <section className="section map-card"><div><span>LOCATION</span><h2>{city.city} on the map</h2><p>{city.lat.toFixed(3)}, {city.lon.toFixed(3)}</p></div><iframe title="Weather location map" loading="lazy" src={`https://www.openstreetmap.org/export/embed.html?bbox=${city.lon-0.12}%2C${city.lat-0.08}%2C${city.lon+0.12}%2C${city.lat+0.08}&layer=mapnik&marker=${city.lat}%2C${city.lon}`}></iframe></section>
-   </>}
-   <section className="section" id="saved"><div className="section-title"><div><span>FAVORITES</span><h2>Saved cities</h2></div></div>{saved.length?<div className="saved-grid">{saved.map(s=><article key={s.id}><div><b>{s.city}</b><small>{s.country}</small></div><button onClick={()=>getWeatherByCity(s.city).then(setCity)}><FiRefreshCw/></button><button onClick={()=>{const n=saved.filter(x=>x.id!==s.id);setSaved(n);saveCities(n)}}><FiTrash2/></button></article>)}</div>:<div className="empty">Save a city with the heart button and it will appear here.</div>}</section>
-  </main><footer><div className="brand"><span className="brand-mark">☁️</span><span>SkyPulse</span></div><p>Weather data by Open‑Meteo • Map by OpenStreetMap</p><span>© 2026</span></footer>
- </div>
+export default function App() {
+  const [page, setPage] = useState(() => window.location.hash.replace('#/', '') || 'home');
+  const [cities, setCities] = useState([]);
+  const [selectedCity, setSelectedCity] = useState(null);
+  const [mapLocation, setMapLocation] = useState(null);
+  const [loading, setLoading] = useState(false);
+  const [message, setMessage] = useState('');
+  const [theme, setTheme] = useState(() => localStorage.getItem(THEME_KEY) || 'light');
+  const [unit, setUnit] = useState(() => localStorage.getItem(UNIT_KEY) || 'C');
+  const [favorites, setFavorites] = useState(() => {
+    try { return JSON.parse(localStorage.getItem(FAVORITES_KEY)) || []; } catch { return []; }
+  });
+
+  useEffect(() => {
+    document.documentElement.dataset.theme = theme;
+    localStorage.setItem(THEME_KEY, theme);
+  }, [theme]);
+
+  useEffect(() => {
+    localStorage.setItem(UNIT_KEY, unit);
+  }, [unit]);
+
+  useEffect(() => {
+    localStorage.setItem(FAVORITES_KEY, JSON.stringify(favorites));
+  }, [favorites]);
+
+  useEffect(() => {
+    const change = () => setPage(window.location.hash.replace('#/', '') || 'home');
+    window.addEventListener('hashchange', change);
+    return () => window.removeEventListener('hashchange', change);
+  }, []);
+
+  useEffect(() => {
+    const saved = getSavedCities();
+    if (!saved.length) return;
+    setCities(saved);
+    setSelectedCity(saved[0]);
+    setMapLocation(saved[0]);
+    Promise.allSettled(saved.slice(0, 6).map(city => getWeatherByCity({
+      city: city.city,
+      country: city.country,
+      admin1: city.admin1,
+      lat: city.lat,
+      lon: city.lon,
+    }))).then(results => {
+      const refreshed = results.filter(item => item.status === 'fulfilled').map(item => item.value);
+      if (refreshed.length) {
+        setCities(refreshed);
+        setSelectedCity(current => refreshed.find(item => item.id === current?.id) || refreshed[0]);
+        saveCities(refreshed);
+      }
+    });
+  }, []);
+
+  const navigate = target => {
+    window.location.hash = `/${target}`;
+    setPage(target);
+  };
+
+  const flash = text => {
+    setMessage(text);
+    window.setTimeout(() => setMessage(''), 3200);
+  };
+
+  const addCity = async cityOrLocation => {
+    setLoading(true);
+    try {
+      const weather = await getWeatherByCity(cityOrLocation);
+      setCities(prev => {
+        const exists = prev.some(item => item.id === weather.id);
+        const next = exists ? prev.map(item => item.id === weather.id ? weather : item) : [weather, ...prev].slice(0, 8);
+        saveCities(next);
+        return next;
+      });
+      setSelectedCity(weather);
+      setMapLocation(weather);
+      flash(`${weather.city} added to your dashboard`);
+    } catch (error) {
+      flash(error.message || 'Could not load this city');
+    } finally {
+      setLoading(false);
+    }
+  };
+
+  const useLocation = () => {
+    if (!navigator.geolocation) { flash('Geolocation is not supported in this browser'); return; }
+    setLoading(true);
+    navigator.geolocation.getCurrentPosition(async position => {
+      try {
+        const weather = await getWeatherByCoords(position.coords.latitude, position.coords.longitude, { city: 'My location', country: '' });
+        setCities(prev => {
+          const next = [weather, ...prev.filter(item => item.id !== weather.id)].slice(0, 8);
+          saveCities(next);
+          return next;
+        });
+        setSelectedCity(weather);
+        setMapLocation(weather);
+        flash('Current location loaded');
+      } catch { flash('Could not load weather for your location'); }
+      finally { setLoading(false); }
+    }, () => { setLoading(false); flash('Location permission was not granted'); }, { enableHighAccuracy: true, timeout: 10000 });
+  };
+
+  const refreshCity = async id => {
+    const city = cities.find(item => item.id === id);
+    if (!city) return;
+    try {
+      const next = await getWeatherByCity(city);
+      setCities(prev => {
+        const updated = prev.map(item => item.id === id ? next : item);
+        saveCities(updated);
+        return updated;
+      });
+      if (selectedCity?.id === id) setSelectedCity(next);
+      flash(`${next.city} refreshed`);
+    } catch { flash('Could not refresh this city'); }
+  };
+
+  const deleteCity = id => {
+    setCities(prev => {
+      const next = prev.filter(item => item.id !== id);
+      saveCities(next);
+      if (selectedCity?.id === id) setSelectedCity(next[0] || null);
+      return next;
+    });
+  };
+
+  const toggleFavorite = id => setFavorites(prev => prev.includes(id) ? prev.filter(item => item !== id) : [...prev, id]);
+  const orderedCities = useMemo(() => [...cities].sort((a, b) => Number(favorites.includes(b.id)) - Number(favorites.includes(a.id))), [cities, favorites]);
+
+  const selectForMap = async location => {
+    try {
+      const weather = location.temperature != null ? location : await getWeatherByCity(location);
+      setMapLocation(weather);
+    } catch { flash('Could not open that location on the map'); }
+  };
+
+  return (
+    <div className="app-shell">
+      <Header page={page} onNavigate={navigate} theme={theme} onToggleTheme={() => setTheme(value => value === 'dark' ? 'light' : 'dark')} unit={unit} onToggleUnit={() => setUnit(value => value === 'C' ? 'F' : 'C')} />
+      {message && <div className="toast-message">{message}</div>}
+
+      {page === 'map' ? (
+        <MapPage selectedCity={mapLocation || selectedCity} onSelectCity={selectForMap} />
+      ) : page === 'travel' ? (
+        <TravelPage unit={unit} />
+      ) : (
+        <main>
+          <Hero onSearch={addCity} onUseLocation={useLocation} loading={loading} />
+          <WeatherList cities={orderedCities} unit={unit} favorites={favorites} onFavorite={toggleFavorite} onRefresh={refreshCity} onDelete={deleteCity} onOpen={city => { setSelectedCity(city); setTimeout(() => document.querySelector('.details-section')?.scrollIntoView({ behavior: 'smooth' }), 40); }} />
+          <WeatherDetails city={selectedCity} unit={unit} />
+          <ComfortAdvice city={selectedCity} />
+          <HourlyForecast city={selectedCity} unit={unit} />
+          <WeeklyForecast city={selectedCity} unit={unit} />
+          <News />
+          <Gallery />
+        </main>
+      )}
+      <Footer onNavigate={navigate} />
+    </div>
+  );
 }
-export default App;

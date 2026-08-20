@@ -1,128 +1,17 @@
-import { useEffect, useState } from 'react';
+const images = [
+  'https://images.unsplash.com/photo-1507525428034-b723cf961d3e?auto=format&fit=crop&w=900&q=80',
+  'https://images.unsplash.com/photo-1501785888041-af3ef285b470?auto=format&fit=crop&w=900&q=80',
+  'https://images.unsplash.com/photo-1470770841072-f978cf4d019e?auto=format&fit=crop&w=1100&q=80',
+  'https://images.unsplash.com/photo-1500530855697-b586d89ba3ee?auto=format&fit=crop&w=900&q=80',
+  'https://images.unsplash.com/photo-1441974231531-c6227db76b6e?auto=format&fit=crop&w=900&q=80',
+];
 
-import {
-  Swiper,
-  SwiperSlide,
-} from 'swiper/react';
-
-import {
-  Navigation,
-  Pagination,
-  Autoplay,
-} from 'swiper/modules';
-
-import 'swiper/css';
-import 'swiper/css/navigation';
-import 'swiper/css/pagination';
-
-import './Gallery.css';
-
-const API_KEY = import.meta.env.VITE_PIXABAY_API_KEY || '';
-
-function Gallery() {
-  const [images, setImages] = useState([]);
-  const [loading, setLoading] = useState(true);
-
-  useEffect(() => {
-    async function fetchNatureImages() {
-      try {
-        const response = await fetch(
-          `https://pixabay.com/api/?key=${API_KEY}&q=nature&image_type=photo&orientation=horizontal&per_page=12&safesearch=true`
-        );
-
-        if (!response.ok) {
-          throw new Error(
-            'Помилка завантаження фотографій'
-          );
-        }
-
-        const data = await response.json();
-
-        setImages(data.hits);
-      } catch (error) {
-        console.error(
-          'Gallery error:',
-          error
-        );
-      } finally {
-        setLoading(false);
-      }
-    }
-
-    fetchNatureImages();
-  }, []);
-
+export default function Gallery() {
   return (
-    <section className="gallery">
-      <div className="gallery-container container">
-
-        <h2 className="gallery-title">
-          Nature gallery
-        </h2>
-
-        {loading && (
-          <p className="gallery-loading">
-            Loading...
-          </p>
-        )}
-
-        {!loading && images.length > 0 && (
-          <Swiper
-            modules={[
-              Navigation,
-              Pagination,
-              Autoplay,
-            ]}
-            navigation
-            pagination={{
-              clickable: true,
-            }}
-            autoplay={{
-              delay: 3000,
-              disableOnInteraction: false,
-            }}
-            loop={true}
-            spaceBetween={20}
-            slidesPerView={1}
-            breakpoints={{
-              768: {
-                slidesPerView: 2,
-              },
-
-              1200: {
-                slidesPerView: 3,
-              },
-            }}
-            className="gallery-slider"
-          >
-            {images.map(image => (
-              <SwiperSlide
-                key={image.id}
-              >
-                <div className="gallery-slide">
-
-                  <img
-                    src={image.webformatURL}
-                    alt={image.tags}
-                  />
-
-                </div>
-              </SwiperSlide>
-            ))}
-          </Swiper>
-        )}
-
-        {!loading &&
-          images.length === 0 && (
-            <p>
-              Не вдалося завантажити
-              фотографії.
-            </p>
-          )}
-
+    <section className="nature-section section-shell">
+      <div className="container-wide"><div className="section-heading"><div><p className="eyebrow">Inspiration</p><h2>Beautiful nature</h2></div></div>
+        <div className="nature-collage">{images.map((src, index) => <img key={src} src={src} alt={`Nature ${index + 1}`} loading="lazy" />)}</div>
       </div>
     </section>
   );
 }
-
-export default Gallery;
