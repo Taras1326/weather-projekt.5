@@ -3,7 +3,7 @@ import {
   FiCloud,
   FiDroplet,
   FiEye,
-  FiGauge,
+  FiCompass,
   FiSunrise,
   FiSunset,
   FiWind,
@@ -35,7 +35,7 @@ export default function WeatherDetails({ city, unit }) {
         <div className="metrics-grid">
           <Metric icon={<FiActivity />} label="Feels like" value={formatTemperature(city.feelsLike, unit)} note={`${formatTemperature(city.minTemperature, unit)} min · ${formatTemperature(city.maxTemperature, unit)} max`} />
           <Metric icon={<FiDroplet />} label="Humidity" value={`${Math.round(city.humidity)}%`} note="Relative humidity" />
-          <Metric icon={<FiGauge />} label="Pressure" value={`${Math.round(city.pressure)} hPa`} note="Sea-level pressure" />
+          <Metric icon={<FiCompass />} label="Pressure" value={`${Math.round(city.pressure)} hPa`} note="Sea-level pressure" />
           <Metric icon={<FiWind />} label="Wind" value={formatWind(city.windSpeed, unit)} note={`${getWindDirection(city.windDirection)} · gusts ${formatWind(city.windGusts, unit)}`} />
           <Metric icon={<FiEye />} label="Visibility" value={`${city.visibility.toFixed(1)} km`} note={city.visibility >= 10 ? 'Very good' : 'Reduced'} />
           <Metric icon={<FiCloud />} label="Cloud cover" value={`${Math.round(city.cloudCover)}%`} note={city.description} />
