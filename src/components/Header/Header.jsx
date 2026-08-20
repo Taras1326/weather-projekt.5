@@ -1,5 +1,20 @@
-import { useState } from "react";
-import { FiUser, FiX, FiLogOut, FiChevronDown } from "react-icons/fi";
+import { useEffect, useState } from "react";
+import {
+  FiUser,
+  FiX,
+  FiLogOut,
+  FiChevronDown,
+  FiSearch,
+  FiMoon,
+  FiSun,
+  FiHeart,
+  FiMap,
+  FiClock,
+  FiCalendar,
+  FiHome,
+  FiCloud,
+  FiMenu,
+} from "react-icons/fi";
 
 import "./Header.css";
 
@@ -7,6 +22,15 @@ function Header() {
   const [isModalOpen, setIsModalOpen] = useState(false);
   const [isUserMenuOpen, setIsUserMenuOpen] = useState(false);
   const [isMobileMenuOpen, setIsMobileMenuOpen] = useState(false);
+  const [isDarkMode, setIsDarkMode] = useState(() => {
+    return localStorage.getItem("weather-theme") === "dark";
+  });
+
+  const [unit, setUnit] = useState(() => {
+    return localStorage.getItem("weather-unit") || "C";
+  });
+
+  const [searchValue, setSearchValue] = useState("");
 
   const [user, setUser] = useState(() => {
     const savedUser = localStorage.getItem("weather-user");
@@ -19,6 +43,46 @@ function Header() {
     email: "",
     password: "",
   });
+
+  /* ========================================
+     THEME
+  ======================================== */
+
+  useEffect(() => {
+    document.body.classList.toggle("dark-theme", isDarkMode);
+
+    localStorage.setItem(
+      "weather-theme",
+      isDarkMode ? "dark" : "light"
+    );
+  }, [isDarkMode]);
+
+  /* ========================================
+     UNIT
+  ======================================== */
+
+  const handleUnitChange = () => {
+    const newUnit = unit === "C" ? "F" : "C";
+
+    setUnit(newUnit);
+    localStorage.setItem("weather-unit", newUnit);
+  };
+
+  /* ========================================
+     SEARCH
+  ======================================== */
+
+  const handleSearch = event => {
+    event.preventDefault();
+
+    const city = searchValue.trim();
+
+    if (!city) return;
+
+    console.log("Search city:", city);
+
+    setSearchValue("");
+  };
 
   /* ========================================
      FORM CHANGE
@@ -40,7 +104,11 @@ function Header() {
   const handleSubmit = event => {
     event.preventDefault();
 
-    if (!formData.username || !formData.email || !formData.password) {
+    if (
+      !formData.username ||
+      !formData.email ||
+      !formData.password
+    ) {
       alert("Please fill in all fields");
       return;
     }
@@ -50,7 +118,10 @@ function Header() {
       email: formData.email,
     };
 
-    localStorage.setItem("weather-user", JSON.stringify(newUser));
+    localStorage.setItem(
+      "weather-user",
+      JSON.stringify(newUser)
+    );
 
     setUser(newUser);
 
@@ -86,7 +157,7 @@ function Header() {
   };
 
   /* ========================================
-     OPEN SIGN UP
+     SIGN UP
   ======================================== */
 
   const handleOpenSignup = () => {
@@ -96,16 +167,13 @@ function Header() {
   };
 
   /* ========================================
-     CLOSE MOBILE MENU
+     MOBILE MENU
   ======================================== */
 
   const handleMobileMenuToggle = () => {
     setIsMobileMenuOpen(prev => !prev);
+    setIsUserMenuOpen(false);
   };
-
-  /* ========================================
-     CLOSE MOBILE MENU AFTER LINK
-  ======================================== */
 
   const handleMobileLinkClick = () => {
     setIsMobileMenuOpen(false);
@@ -113,35 +181,127 @@ function Header() {
 
   return (
     <>
-      {/* ========================================
-          HEADER
-      ======================================== */}
-
       <header className="header">
+
         <div className="header-container">
 
-          {/* LOGO */}
+          {/* ========================================
+              LOGO
+          ======================================== */}
 
           <a href="/" className="header-logo">
             <img
               src="./src/components/Header/logo-projekt.png"
-              alt="247 forecast"
+              alt="Weather 24/7"
             />
+
+            <div className="logo-text">
+              <strong>WEATHER</strong>
+              <span>24/7 FORECAST</span>
+            </div>
           </a>
 
-          {/* DESKTOP NAVIGATION */}
+          {/* ========================================
+              DESKTOP NAVIGATION
+          ======================================== */}
 
           <nav className="navigation">
-            <a href="#about">Who we are</a>
 
-            <a href="#contacts">Contacts</a>
+            <a href="/" className="navigation-link">
+              <FiHome />
+              <span>Home</span>
+            </a>
 
-            <a href="#menu">Menu</a>
+            <a href="#forecast" className="navigation-link">
+              <FiCloud />
+              <span>Forecast</span>
+            </a>
+
+            <a href="#hourly" className="navigation-link">
+              <FiClock />
+              <span>Hourly</span>
+            </a>
+
+            <a href="#weekly" className="navigation-link">
+              <FiCalendar />
+              <span>7 Days</span>
+            </a>
+
+            <a href="#map" className="navigation-link">
+              <FiMap />
+              <span>Maps</span>
+            </a>
+
+            <a href="#news" className="navigation-link">
+              <span>News</span>
+            </a>
+
           </nav>
 
-          {/* DESKTOP ACTIONS */}
+          {/* ========================================
+              SEARCH
+          ======================================== */}
+
+          <form
+            className="header-search"
+            onSubmit={handleSearch}
+          >
+
+            <FiSearch />
+
+            <input
+              type="search"
+              placeholder="Search city..."
+              value={searchValue}
+              onChange={event =>
+                setSearchValue(event.target.value)
+              }
+            />
+
+          </form>
+
+          {/* ========================================
+              HEADER ACTIONS
+          ======================================== */}
 
           <div className="header-actions">
+
+            {/* UNIT */}
+
+            <button
+              type="button"
+              className="header-icon-button unit-button"
+              onClick={handleUnitChange}
+              title="Change temperature unit"
+            >
+              <span>°{unit}</span>
+            </button>
+
+            {/* DARK MODE */}
+
+            <button
+              type="button"
+              className="header-icon-button"
+              onClick={() =>
+                setIsDarkMode(prev => !prev)
+              }
+              aria-label="Toggle dark mode"
+              title="Toggle theme"
+            >
+              {isDarkMode ? <FiSun /> : <FiMoon />}
+            </button>
+
+            {/* FAVORITES */}
+
+            <button
+              type="button"
+              className="header-icon-button favorite-button"
+              title="Favorites"
+            >
+              <FiHeart />
+            </button>
+
+            {/* USER */}
 
             {user ? (
               <div className="user-wrapper">
@@ -151,7 +311,14 @@ function Header() {
                   className="user-name"
                   onClick={handleUserClick}
                 >
-                  {user.username}
+                  <span>{user.username}</span>
+                  <FiChevronDown
+                    className={
+                      isUserMenuOpen
+                        ? "user-arrow user-arrow-open"
+                        : "user-arrow"
+                    }
+                  />
                 </button>
 
                 {isUserMenuOpen && (
@@ -159,15 +326,37 @@ function Header() {
 
                     <div className="user-menu-info">
 
-                      <FiUser />
+                      <div className="user-menu-avatar">
+                        <FiUser />
+                      </div>
 
                       <div>
-                        <strong>{user.username}</strong>
+                        <strong>
+                          {user.username}
+                        </strong>
 
-                        <span>{user.email}</span>
+                        <span>
+                          {user.email}
+                        </span>
                       </div>
 
                     </div>
+
+                    <button
+                      type="button"
+                      className="profile-menu-item"
+                    >
+                      <FiUser />
+                      <span>My profile</span>
+                    </button>
+
+                    <button
+                      type="button"
+                      className="profile-menu-item"
+                    >
+                      <FiHeart />
+                      <span>Favorites</span>
+                    </button>
 
                     <button
                       type="button"
@@ -175,7 +364,6 @@ function Header() {
                       onClick={handleLogout}
                     >
                       <FiLogOut />
-
                       <span>Log out</span>
                     </button>
 
@@ -193,25 +381,10 @@ function Header() {
               </button>
             )}
 
-            <button
-              type="button"
-              className="avatar-button"
-              onClick={() => {
-                if (user) {
-                  handleUserClick();
-                } else {
-                  handleOpenSignup();
-                }
-              }}
-              aria-label="Open profile"
-            >
-              <FiUser />
-            </button>
-
           </div>
 
           {/* ========================================
-              MOBILE MENU BUTTON
+              MOBILE BUTTON
           ======================================== */}
 
           <button
@@ -221,69 +394,149 @@ function Header() {
             aria-label="Open menu"
             aria-expanded={isMobileMenuOpen}
           >
-            <span>Menu</span>
-
-            <FiChevronDown
-              className={
-                isMobileMenuOpen
-                  ? "mobile-menu-icon mobile-menu-icon-open"
-                  : "mobile-menu-icon"
-              }
-            />
+            {isMobileMenuOpen ? (
+              <FiX />
+            ) : (
+              <FiMenu />
+            )}
           </button>
 
         </div>
 
-
         {/* ========================================
-            MOBILE MENU PANEL
+            MOBILE MENU
         ======================================== */}
 
         {isMobileMenuOpen && (
           <div className="mobile-menu-panel">
 
+            {/* MOBILE SEARCH */}
+
+            <form
+              className="mobile-search"
+              onSubmit={handleSearch}
+            >
+              <FiSearch />
+
+              <input
+                type="search"
+                placeholder="Search city..."
+                value={searchValue}
+                onChange={event =>
+                  setSearchValue(event.target.value)
+                }
+              />
+            </form>
+
+            {/* MOBILE NAV */}
+
             <nav className="mobile-navigation">
 
               <a
-                href="#about"
+                href="/"
                 onClick={handleMobileLinkClick}
               >
-                Who we are
+                <FiHome />
+                <span>Home</span>
               </a>
 
               <a
-                href="#contacts"
+                href="#forecast"
                 onClick={handleMobileLinkClick}
               >
-                Contacts
+                <FiCloud />
+                <span>Forecast</span>
               </a>
 
               <a
-                href="#menu"
+                href="#hourly"
                 onClick={handleMobileLinkClick}
               >
-                Menu
+                <FiClock />
+                <span>Hourly</span>
+              </a>
+
+              <a
+                href="#weekly"
+                onClick={handleMobileLinkClick}
+              >
+                <FiCalendar />
+                <span>7 Days</span>
+              </a>
+
+              <a
+                href="#map"
+                onClick={handleMobileLinkClick}
+              >
+                <FiMap />
+                <span>Maps</span>
+              </a>
+
+              <a
+                href="#news"
+                onClick={handleMobileLinkClick}
+              >
+                <span>News</span>
               </a>
 
             </nav>
 
+            {/* MOBILE SETTINGS */}
+
+            <div className="mobile-settings">
+
+              <button
+                type="button"
+                onClick={handleUnitChange}
+              >
+                🌡
+                <span>Temperature</span>
+                <strong>°{unit}</strong>
+              </button>
+
+              <button
+                type="button"
+                onClick={() =>
+                  setIsDarkMode(prev => !prev)
+                }
+              >
+                {isDarkMode ? <FiSun /> : <FiMoon />}
+                <span>Theme</span>
+                <strong>
+                  {isDarkMode ? "Dark" : "Light"}
+                </strong>
+              </button>
+
+              <button type="button">
+                <FiHeart />
+                <span>Favorites</span>
+              </button>
+
+            </div>
 
             {/* MOBILE USER */}
 
-            <div className="mobile-menu-actions">
+            <div className="mobile-user-section">
 
               <div className="mobile-avatar">
                 <FiUser />
               </div>
 
               {user ? (
-                <button
-                  type="button"
-                  className="mobile-user-name"
-                  onClick={handleUserClick}
-                >
-                  {user.username}
-                </button>
+                <>
+                  <div className="mobile-user-info">
+                    <strong>{user.username}</strong>
+                    <span>{user.email}</span>
+                  </div>
+
+                  <button
+                    type="button"
+                    className="mobile-logout"
+                    onClick={handleLogout}
+                  >
+                    <FiLogOut />
+                  </button>
+                </>
               ) : (
                 <button
                   type="button"
@@ -298,8 +551,8 @@ function Header() {
 
           </div>
         )}
-      </header>
 
+      </header>
 
       {/* ========================================
           SIGN UP MODAL
@@ -313,34 +566,37 @@ function Header() {
 
           <div
             className="signup-modal"
-            onClick={event => event.stopPropagation()}
+            onClick={event =>
+              event.stopPropagation()
+            }
           >
-
-            {/* CLOSE */}
 
             <button
               className="modal-close"
               type="button"
-              onClick={() => setIsModalOpen(false)}
+              onClick={() =>
+                setIsModalOpen(false)
+              }
               aria-label="Close"
             >
               <FiX />
             </button>
 
+            <div className="modal-icon">
+              <FiUser />
+            </div>
 
-            {/* TITLE */}
+            <h2>Create your account</h2>
 
-            <h2>Sign up</h2>
-
-
-            {/* FORM */}
+            <p className="modal-description">
+              Save your favorite cities and personalize
+              your weather experience.
+            </p>
 
             <form
               className="signup-form"
               onSubmit={handleSubmit}
             >
-
-              {/* USERNAME */}
 
               <label htmlFor="username">
                 Username
@@ -350,13 +606,10 @@ function Header() {
                 id="username"
                 name="username"
                 type="text"
-                placeholder="Username"
+                placeholder="Enter your username"
                 value={formData.username}
                 onChange={handleChange}
               />
-
-
-              {/* EMAIL */}
 
               <label htmlFor="email">
                 E-Mail
@@ -366,13 +619,10 @@ function Header() {
                 id="email"
                 name="email"
                 type="email"
-                placeholder="E-Mail"
+                placeholder="Enter your email"
                 value={formData.email}
                 onChange={handleChange}
               />
-
-
-              {/* PASSWORD */}
 
               <label htmlFor="password">
                 Password
@@ -382,34 +632,28 @@ function Header() {
                 id="password"
                 name="password"
                 type="password"
-                placeholder="Password"
+                placeholder="Create a password"
                 value={formData.password}
                 onChange={handleChange}
               />
-
-
-              {/* SAVE */}
 
               <button
                 className="save-button"
                 type="submit"
               >
-                Sign up
+                Create account
               </button>
-
-
-              {/* LOGIN */}
 
               <p className="login-text">
                 Already have an account?{" "}
 
                 <button
                   type="button"
-                  onClick={() => {
+                  onClick={() =>
                     alert(
                       "Login functionality will be added later."
-                    );
-                  }}
+                    )
+                  }
                 >
                   Log In
                 </button>
@@ -421,6 +665,7 @@ function Header() {
 
         </div>
       )}
+
     </>
   );
 }
