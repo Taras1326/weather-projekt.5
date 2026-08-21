@@ -1,4 +1,4 @@
-import { useState } from "react";
+import { useEffect, useState } from "react";
 import {
   FiUser,
   FiMenu,
@@ -9,8 +9,22 @@ import {
   FiCompass,
   FiHome,
   FiLogOut,
+  FiMail,
+  FiLock,
+  FiEye,
+  FiEyeOff,
+  FiCheck,
+  FiArrowLeft,
+  FiBell,
+  FiSettings,
+  FiHeart,
+  FiGlobe,
+  FiChevronDown,
 } from "react-icons/fi";
+
 import logo from "./logo-projekt.png";
+
+import { useLanguage } from "../context/LanguageContext.jsx";
 
 export default function Header({
   page,
@@ -20,9 +34,21 @@ export default function Header({
   unit,
   onToggleUnit,
 }) {
+  const { language, setLanguage, t } = useLanguage();
+
   const [mobileOpen, setMobileOpen] = useState(false);
   const [profileOpen, setProfileOpen] = useState(false);
-  const [signupOpen, setSignupOpen] = useState(false);
+  const [languageOpen, setLanguageOpen] = useState(false);
+
+  const [authOpen, setAuthOpen] = useState(false);
+  const [authMode, setAuthMode] = useState("signup");
+
+  const [showPassword, setShowPassword] = useState(false);
+  const [showConfirmPassword, setShowConfirmPassword] = useState(false);
+
+  const [success, setSuccess] = useState(false);
+  const [error, setError] = useState("");
+
   const [user, setUser] = useState(() => {
     try {
       return JSON.parse(localStorage.getItem("weather-user")) || null;
@@ -30,29 +56,331 @@ export default function Header({
       return null;
     }
   });
-  const [form, setForm] = useState({ username: "", email: "" });
+
+  const [form, setForm] = useState({
+    username: "",
+    email: "",
+    password: "",
+    confirmPassword: "",
+    remember: false,
+    terms: false,
+  });
+
+  const languages = [
+    {
+      code: "en",
+      flag: "🇬🇧",
+      short: "EN",
+      name: "English",
+    },
+    {
+      code: "de",
+      flag: "🇩🇪",
+      short: "DE",
+      name: "Deutsch",
+    },
+    {
+      code: "uk",
+      flag: "🇺🇦",
+      short: "UA",
+      name: "Українська",
+    },
+    {
+      code: "ru",
+      flag: "🇷🇺",
+      short: "RU",
+      name: "Русский",
+    },
+  ];
+
+  const currentLanguage =
+    languages.find((item) => item.code === language) || languages[0];
+
+  useEffect(() => {
+    const handleResize = () => {
+      if (window.innerWidth > 768) {
+        setMobileOpen(false);
+      }
+    };
+
+    window.addEventListener("resize", handleResize);
+    handleResize();
+
+    return () => {
+      window.removeEventListener("resize", handleResize);
+    };
+  }, []);
+
+  useEffect(() => {
+    if (!mobileOpen || window.innerWidth > 768) {
+      document.body.style.overflow = "";
+      return;
+    }
+
+    const previousOverflow = document.body.style.overflow;
+    document.body.style.overflow = "hidden";
+
+    return () => {
+      document.body.style.overflow = previousOverflow;
+    };
+  }, [mobileOpen]);
 
   const nav = (target) => {
-    onNavigate(target);
+    onNavigate?.(target);
+
     setMobileOpen(false);
-    window.scrollTo({ top: 0, behavior: "smooth" });
+    setProfileOpen(false);
+    setLanguageOpen(false);
+
+    window.scrollTo({
+      top: 0,
+      behavior: "smooth",
+    });
   };
 
-  const submit = (event) => {
+  const resetForm = () => {
+    setForm({
+      username: "",
+      email: "",
+      password: "",
+      confirmPassword: "",
+      remember: false,
+      terms: false,
+    });
+
+    setShowPassword(false);
+    setShowConfirmPassword(false);
+
+    setError("");
+    setSuccess(false);
+  };
+
+  const openAuth = (mode) => {
+    resetForm();
+
+    setAuthMode(mode);
+    setAuthOpen(true);
+
+    setProfileOpen(false);
+    setLanguageOpen(false);
+  };
+
+  const closeAuth = () => {
+    setAuthOpen(false);
+
+    setTimeout(() => {
+      resetForm();
+      setAuthMode("signup");
+    }, 200);
+  };
+
+  const switchAuthMode = (mode) => {
+    resetForm();
+    setAuthMode(mode);
+  };
+
+  const signup = () => {
+    setError("");
+
+    if (!form.username.trim()) {
+      setError("Please enter your username.");
+      return;
+    }
+
+    if (form.username.trim().length < 3) {
+      setError("Username must contain at least 3 characters.");
+      return;
+    }
+
+    if (!form.email.trim()) {
+      setError("Please enter your email.");
+      return;
+    }
+
+    if (!/^\S+@\S+\.\S+$/.test(form.email)) {
+      setError("Please enter a valid email address.");
+      return;
+    }
+
+    if (form.password.length < 8) {
+      setError("Password must contain at least 8 characters.");
+      return;
+    }
+
+    if (!/[A-Z]/.test(form.password)) {
+      setError("Password must contain at least one capital letter.");
+      return;
+    }
+
+    if (!/[0-9]/.test(form.password)) {
+      setError("Password must contain at least one number.");
+      return;
+    }
+
+    if (!/[^A-Za-z0-9]/.test(form.password)) {
+      setError("Password must contain at least one special symbol.");
+      return;
+    }
+
+    if (form.password !== form.confirmPassword) {
+      setError("Passwords do not match.");
+      return;
+    }
+
+    if (!form.terms) {
+      setError("Please accept Terms and Privacy Policy.");
+      return;
+    }
+
+    const account = {
+      username: form.username.trim(),
+      email: form.email.trim(),
+      password: form.password,
+    };
+
+    localStorage.setItem("weather-account", JSON.stringify(account));
+
+    const publicUser = {
+      username: account.username,
+      email: account.email,
+    };
+
+    localStorage.setItem("weather-user", JSON.stringify(publicUser));
+
+    setUser(publicUser);
+    setSuccess(true);
+
+    setTimeout(() => {
+      closeAuth();
+    }, 1700);
+  };
+
+  const login = () => {
+    setError("");
+
+    if (!form.email.trim()) {
+      setError("Please enter your email.");
+      return;
+    }
+
+    if (!form.password) {
+      setError("Please enter your password.");
+      return;
+    }
+
+    let savedAccount = null;
+
+    try {
+      savedAccount = JSON.parse(localStorage.getItem("weather-account"));
+    } catch {
+      savedAccount = null;
+    }
+
+    if (!savedAccount) {
+      setError("No account found. Please create an account first.");
+      return;
+    }
+
+    if (savedAccount.email.toLowerCase() !== form.email.trim().toLowerCase()) {
+      setError("Incorrect email address.");
+      return;
+    }
+
+    if (savedAccount.password !== form.password) {
+      setError("Incorrect password.");
+      return;
+    }
+
+    const publicUser = {
+      username: savedAccount.username,
+      email: savedAccount.email,
+    };
+
+    localStorage.setItem("weather-user", JSON.stringify(publicUser));
+
+    if (form.remember) {
+      localStorage.setItem("weather-remember-email", form.email);
+    } else {
+      localStorage.removeItem("weather-remember-email");
+    }
+
+    setUser(publicUser);
+    setSuccess(true);
+
+    setTimeout(() => {
+      closeAuth();
+    }, 1500);
+  };
+
+  const forgotPassword = () => {
+    setError("");
+
+    if (!form.email.trim()) {
+      setError("Enter your email address first.");
+      return;
+    }
+
+    let savedAccount = null;
+
+    try {
+      savedAccount = JSON.parse(localStorage.getItem("weather-account"));
+    } catch {
+      savedAccount = null;
+    }
+
+    if (
+      !savedAccount ||
+      savedAccount.email.toLowerCase() !== form.email.trim().toLowerCase()
+    ) {
+      setError("We could not find an account with this email.");
+      return;
+    }
+
+    setSuccess(true);
+  };
+
+  const handleSubmit = (event) => {
     event.preventDefault();
-    if (!form.username.trim() || !form.email.trim()) return;
-    const next = { username: form.username.trim(), email: form.email.trim() };
-    localStorage.setItem("weather-user", JSON.stringify(next));
-    setUser(next);
-    setSignupOpen(false);
-    setForm({ username: "", email: "" });
+
+    if (authMode === "signup") {
+      signup();
+    }
+
+    if (authMode === "login") {
+      login();
+    }
+
+    if (authMode === "forgot") {
+      forgotPassword();
+    }
   };
 
   const logout = () => {
     localStorage.removeItem("weather-user");
+
     setUser(null);
     setProfileOpen(false);
   };
+
+  const passwordChecks = {
+    length: form.password.length >= 8,
+    capital: /[A-Z]/.test(form.password),
+    number: /[0-9]/.test(form.password),
+    special: /[^A-Za-z0-9]/.test(form.password),
+  };
+
+  const passwordScore = Object.values(passwordChecks).filter(Boolean).length;
+
+  const passwordStrength =
+    passwordScore === 0
+      ? ""
+      : passwordScore === 1
+      ? "Weak"
+      : passwordScore === 2
+      ? "Medium"
+      : passwordScore === 3
+      ? "Good"
+      : "Strong";
 
   return (
     <>
@@ -62,84 +390,211 @@ export default function Header({
             className="brand-button"
             type="button"
             onClick={() => nav("home")}
-            aria-label="Go to dashboard"
           >
             <img src={logo} alt="24/7 forecast" />
           </button>
 
-          <nav className="desktop-nav" aria-label="Main navigation">
+          <nav className="desktop-nav">
             <button
               className={page === "home" ? "active" : ""}
               onClick={() => nav("home")}
             >
-              <FiHome /> Dashboard
+              <FiHome />
+              {t("nav.dashboard")}
             </button>
+
             <button
               className={page === "map" ? "active" : ""}
               onClick={() => nav("map")}
             >
-              <FiMap /> Weather map
+              <FiMap />
+              {t("nav.map")}
             </button>
+
             <button
               className={page === "travel" ? "active" : ""}
               onClick={() => nav("travel")}
             >
-              <FiCompass /> Travel planner
+              <FiCompass />
+              {t("nav.travel")}
             </button>
-            <a href="#contacts">Contacts</a>
+
+            <a href="#contacts">{t("nav.contacts")}</a>
           </nav>
 
           <div className="header-tools">
+            <div className="language-selector">
+              <button
+                className="language-button"
+                type="button"
+                onClick={() => {
+                  setLanguageOpen((value) => !value);
+
+                  setProfileOpen(false);
+                }}
+              >
+                <FiGlobe />
+
+                <span className="language-flag">{currentLanguage.flag}</span>
+
+                <strong>{currentLanguage.short}</strong>
+
+                <FiChevronDown
+                  className={
+                    languageOpen ? "language-arrow open" : "language-arrow"
+                  }
+                />
+              </button>
+
+              {languageOpen && (
+                <div className="language-dropdown">
+                  <div className="language-dropdown-title">
+                    <FiGlobe />
+
+                    <span>{t("language")}</span>
+                  </div>
+
+                  {languages.map((item) => (
+                    <button
+                      key={item.code}
+                      type="button"
+                      className={language === item.code ? "active" : ""}
+                      onClick={() => {
+                        setLanguage(item.code);
+
+                        setLanguageOpen(false);
+                      }}
+                    >
+                      <span className="language-dropdown-flag">
+                        {item.flag}
+                      </span>
+
+                      <span>{item.name}</span>
+
+                      {language === item.code && <FiCheck />}
+                    </button>
+                  ))}
+                </div>
+              )}
+            </div>
+
             <button
               className="unit-toggle"
               type="button"
               onClick={onToggleUnit}
-              title="Change temperature unit"
             >
               °{unit}
             </button>
+
             <button
               className="icon-button theme-toggle"
               type="button"
               onClick={onToggleTheme}
-              title="Toggle dark theme"
             >
               {theme === "dark" ? <FiSun /> : <FiMoon />}
             </button>
+
+            {user && (
+              <button
+                className="icon-button"
+                type="button"
+                title="Notifications"
+              >
+                <FiBell />
+              </button>
+            )}
+
             {!user && (
               <button
                 className="accent-button signup-compact"
-                onClick={() => setSignupOpen(true)}
+                type="button"
+                onClick={() => openAuth("signup")}
               >
-                Sign Up
+                {t("auth.signup")}
               </button>
             )}
+
+            {!user && (
+              <button
+                className="header-login-button"
+                type="button"
+                onClick={() => openAuth("login")}
+              >
+                {t("auth.login")}
+              </button>
+            )}
+
             <div className="profile-wrap">
               <button
                 className="avatar-button"
                 type="button"
-                onClick={() =>
-                  user ? setProfileOpen((value) => !value) : setSignupOpen(true)
-                }
-                aria-label="Profile"
+                onClick={() => {
+                  setLanguageOpen(false);
+
+                  if (user) {
+                    setProfileOpen((value) => !value);
+                  } else {
+                    openAuth("login");
+                  }
+                }}
               >
                 <FiUser />
               </button>
+
               {user && profileOpen && (
                 <div className="profile-menu glass-panel">
-                  <strong>{user.username}</strong>
-                  <span>{user.email}</span>
-                  <button onClick={logout}>
-                    <FiLogOut /> Log out
+                  <div className="profile-menu-top">
+                    <div className="profile-menu-avatar">
+                      <FiUser />
+                    </div>
+
+                    <div>
+                      <strong>{user.username}</strong>
+
+                      <span>{user.email}</span>
+                    </div>
+                  </div>
+
+                  <div className="profile-menu-divider" />
+
+                  <button type="button" onClick={() => nav("profile")}>
+                    <FiUser />
+                    {t("profile.myProfile")}
+                  </button>
+
+                  <button type="button" onClick={() => nav("favorites")}>
+                    <FiHeart />
+                    {t("profile.myCities")}
+                  </button>
+
+                  <button type="button" onClick={() => nav("alerts")}>
+                    <FiBell />
+                    {t("profile.weatherAlerts")}
+                  </button>
+
+                  <button type="button" onClick={() => nav("settings")}>
+                    <FiSettings />
+                    {t("profile.settings")}
+                  </button>
+
+                  <div className="profile-menu-divider" />
+
+                  <button
+                    className="logout-button"
+                    type="button"
+                    onClick={logout}
+                  >
+                    <FiLogOut />
+                    {t("profile.logout")}
                   </button>
                 </div>
               )}
             </div>
+
             <button
               className="mobile-nav-toggle icon-button"
               type="button"
               onClick={() => setMobileOpen((value) => !value)}
-              aria-label="Menu"
             >
               {mobileOpen ? <FiX /> : <FiMenu />}
             </button>
@@ -147,61 +602,555 @@ export default function Header({
         </div>
 
         {mobileOpen && (
-          <nav className="mobile-nav">
-            <button onClick={() => nav("home")}>Dashboard</button>
-            <button onClick={() => nav("map")}>Weather map</button>
-            <button onClick={() => nav("travel")}>Travel planner</button>
-            <a href="#contacts" onClick={() => setMobileOpen(false)}>
-              Contacts
-            </a>
+          <nav className="mobile-nav mobile-nav-pro">
+            <div className="mobile-menu-top">
+              <span className="mobile-menu-title">Menu</span>
+            </div>
+
+            <div className="mobile-menu-links">
+              <button
+                className={page === "home" ? "active" : ""}
+                type="button"
+                onClick={() => nav("home")}
+              >
+                <FiHome />
+                <span>{t("nav.dashboard")}</span>
+              </button>
+
+              <button
+                className={page === "map" ? "active" : ""}
+                type="button"
+                onClick={() => nav("map")}
+              >
+                <FiMap />
+                <span>{t("nav.map")}</span>
+              </button>
+
+              <button
+                className={page === "travel" ? "active" : ""}
+                type="button"
+                onClick={() => nav("travel")}
+              >
+                <FiCompass />
+                <span>{t("nav.travel")}</span>
+              </button>
+
+              <a href="#contacts" onClick={() => setMobileOpen(false)}>
+                <FiMail />
+                <span>{t("nav.contacts")}</span>
+              </a>
+            </div>
+
+            <div className="mobile-menu-divider" />
+
+            <div className="mobile-settings-title">
+              {t("profile.preferences")}
+            </div>
+
+            <div className="mobile-quick-settings">
+              <button type="button" onClick={onToggleUnit}>
+                <span className="mobile-setting-icon">°{unit}</span>
+
+                <span>{t("settings.temperatureUnit")}</span>
+
+                <strong>°{unit}</strong>
+              </button>
+
+              {user && (
+                <button type="button" onClick={() => nav("alerts")}>
+                  <span className="mobile-setting-icon">
+                    <FiBell />
+                  </span>
+
+                  <span>{t("profile.weatherAlerts")}</span>
+
+                  <FiChevronDown className="mobile-row-arrow" />
+                </button>
+              )}
+            </div>
+
+            <div className="mobile-menu-divider" />
+
+            {user ? (
+              <>
+                <div className="mobile-user-card">
+                  <div className="mobile-user-avatar">
+                    <FiUser />
+                  </div>
+
+                  <div>
+                    <strong>{user.username}</strong>
+
+                    <span>{user.email}</span>
+                  </div>
+                </div>
+
+                <div className="mobile-profile-links">
+                  <button type="button" onClick={() => nav("profile")}>
+                    <FiUser />
+                    <span>{t("profile.myProfile")}</span>
+                  </button>
+
+                  <button type="button" onClick={() => nav("favorites")}>
+                    <FiHeart />
+                    <span>{t("profile.myCities")}</span>
+                  </button>
+
+                  <button type="button" onClick={() => nav("alerts")}>
+                    <FiBell />
+                    <span>{t("profile.weatherAlerts")}</span>
+                  </button>
+
+                  <button type="button" onClick={() => nav("settings")}>
+                    <FiSettings />
+                    <span>{t("profile.settings")}</span>
+                  </button>
+                </div>
+
+                <button
+                  type="button"
+                  className="mobile-logout-button"
+                  onClick={() => {
+                    logout();
+                    setMobileOpen(false);
+                  }}
+                >
+                  <FiLogOut />
+                  {t("profile.logout")}
+                </button>
+              </>
+            ) : (
+              <div className="mobile-auth-actions">
+                <button
+                  className="mobile-signup-button"
+                  type="button"
+                  onClick={() => {
+                    setMobileOpen(false);
+                    openAuth("signup");
+                  }}
+                >
+                  <FiUser />
+                  {t("auth.signup")}
+                </button>
+
+                <button
+                  className="mobile-login-button"
+                  type="button"
+                  onClick={() => {
+                    setMobileOpen(false);
+                    openAuth("login");
+                  }}
+                >
+                  {t("auth.login")}
+                </button>
+              </div>
+            )}
           </nav>
         )}
       </header>
 
-      {signupOpen && (
-        <div
-          className="modal-backdrop"
-          onMouseDown={() => setSignupOpen(false)}
-        >
+      {authOpen && (
+        <div className="modal-backdrop" onMouseDown={closeAuth}>
           <form
-            className="signup-modal"
-            onSubmit={submit}
+            className="signup-modal signup-modal-pro"
+            onSubmit={handleSubmit}
             onMouseDown={(event) => event.stopPropagation()}
           >
             <button
               className="modal-close icon-button"
               type="button"
-              onClick={() => setSignupOpen(false)}
+              onClick={closeAuth}
             >
               <FiX />
             </button>
-            <p className="eyebrow">24/7 forecast</p>
-            <h2>Create your profile</h2>
-            <p>Save your favourite cities and preferences on this device.</p>
-            <label>
-              Name
-              <input
-                value={form.username}
-                onChange={(event) =>
-                  setForm((prev) => ({ ...prev, username: event.target.value }))
-                }
-                placeholder="Your name"
-              />
-            </label>
-            <label>
-              Email
-              <input
-                type="email"
-                value={form.email}
-                onChange={(event) =>
-                  setForm((prev) => ({ ...prev, email: event.target.value }))
-                }
-                placeholder="you@example.com"
-              />
-            </label>
-            <button className="accent-button modal-submit" type="submit">
-              Create profile
-            </button>
+
+            {success ? (
+              <div className="signup-success">
+                <div className="signup-success-icon">
+                  <FiCheck />
+                </div>
+
+                {authMode === "signup" && (
+                  <>
+                    <h2>{t("auth.createAccount")}</h2>
+
+                    <p>{t("auth.successAccount")}</p>
+
+                    <strong>{form.username}</strong>
+                  </>
+                )}
+
+                {authMode === "login" && (
+                  <>
+                    <h2>{t("auth.welcomeBack")}</h2>
+
+                    <p>{t("auth.successLogin")}</p>
+                  </>
+                )}
+
+                {authMode === "forgot" && (
+                  <>
+                    <h2>{t("auth.checkInbox")}</h2>
+
+                    <p>Password reset instructions would be sent to:</p>
+
+                    <strong>{form.email}</strong>
+
+                    <p className="demo-notice">
+                      Demo mode: real email sending requires Firebase or
+                      Supabase.
+                    </p>
+                  </>
+                )}
+              </div>
+            ) : (
+              <>
+                <div className="signup-brand">
+                  <img src={logo} alt="24/7 forecast" />
+                </div>
+
+                {authMode === "signup" && (
+                  <>
+                    <h2>{t("auth.createAccount")}</h2>
+
+                    <p className="signup-description">
+                      {t("auth.createDescription")}
+                    </p>
+                  </>
+                )}
+
+                {authMode === "login" && (
+                  <>
+                    <h2>{t("auth.welcomeBack")}</h2>
+
+                    <p className="signup-description">
+                      {t("auth.loginDescription")}
+                    </p>
+                  </>
+                )}
+
+                {authMode === "forgot" && (
+                  <>
+                    <button
+                      className="auth-back-button"
+                      type="button"
+                      onClick={() => switchAuthMode("login")}
+                    >
+                      <FiArrowLeft />
+                      {t("auth.backLogin")}
+                    </button>
+
+                    <h2>{t("auth.forgotPassword")}</h2>
+
+                    <p className="signup-description">
+                      {t("auth.forgotDescription")}
+                    </p>
+                  </>
+                )}
+
+                {authMode === "signup" && (
+                  <label>
+                    {t("auth.username")}
+
+                    <div className="signup-input-wrap">
+                      <FiUser />
+
+                      <input
+                        type="text"
+                        value={form.username}
+                        onChange={(event) => {
+                          setForm((prev) => ({
+                            ...prev,
+                            username: event.target.value,
+                          }));
+
+                          setError("");
+                        }}
+                        placeholder={t("auth.username")}
+                      />
+                    </div>
+                  </label>
+                )}
+
+                <label>
+                  {t("auth.email")}
+
+                  <div className="signup-input-wrap">
+                    <FiMail />
+
+                    <input
+                      type="email"
+                      value={form.email}
+                      onChange={(event) => {
+                        setForm((prev) => ({
+                          ...prev,
+                          email: event.target.value,
+                        }));
+
+                        setError("");
+                      }}
+                      placeholder="name@example.com"
+                    />
+                  </div>
+                </label>
+
+                {authMode !== "forgot" && (
+                  <label>
+                    {t("auth.password")}
+
+                    <div className="signup-input-wrap">
+                      <FiLock />
+
+                      <input
+                        type={showPassword ? "text" : "password"}
+                        value={form.password}
+                        onChange={(event) => {
+                          setForm((prev) => ({
+                            ...prev,
+                            password: event.target.value,
+                          }));
+
+                          setError("");
+                        }}
+                        placeholder={t("auth.password")}
+                      />
+
+                      <button
+                        className="password-eye"
+                        type="button"
+                        onClick={() => setShowPassword((value) => !value)}
+                      >
+                        {showPassword ? <FiEyeOff /> : <FiEye />}
+                      </button>
+                    </div>
+                  </label>
+                )}
+
+                {authMode === "signup" && form.password && (
+                  <div className="password-info">
+                    <div className="password-strength-top">
+                      <span>{t("auth.passwordStrength")}</span>
+
+                      <strong>{passwordStrength}</strong>
+                    </div>
+
+                    <div className="password-strength-bars">
+                      {[1, 2, 3, 4].map((item) => (
+                        <span
+                          key={item}
+                          className={
+                            passwordScore >= item
+                              ? `active strength-${passwordScore}`
+                              : ""
+                          }
+                        />
+                      ))}
+                    </div>
+
+                    <div className="password-checks">
+                      <span className={passwordChecks.length ? "valid" : ""}>
+                        <FiCheck />
+                        {t("auth.characters")}
+                      </span>
+
+                      <span className={passwordChecks.capital ? "valid" : ""}>
+                        <FiCheck />
+                        {t("auth.capital")}
+                      </span>
+
+                      <span className={passwordChecks.number ? "valid" : ""}>
+                        <FiCheck />
+                        {t("auth.number")}
+                      </span>
+
+                      <span className={passwordChecks.special ? "valid" : ""}>
+                        <FiCheck />
+                        {t("auth.special")}
+                      </span>
+                    </div>
+                  </div>
+                )}
+
+                {authMode === "signup" && (
+                  <>
+                    <label>
+                      {t("auth.confirmPassword")}
+
+                      <div className="signup-input-wrap">
+                        <FiLock />
+
+                        <input
+                          type={showConfirmPassword ? "text" : "password"}
+                          value={form.confirmPassword}
+                          onChange={(event) => {
+                            setForm((prev) => ({
+                              ...prev,
+                              confirmPassword: event.target.value,
+                            }));
+
+                            setError("");
+                          }}
+                          placeholder={t("auth.repeatPassword")}
+                        />
+
+                        <button
+                          className="password-eye"
+                          type="button"
+                          onClick={() =>
+                            setShowConfirmPassword((value) => !value)
+                          }
+                        >
+                          {showConfirmPassword ? <FiEyeOff /> : <FiEye />}
+                        </button>
+                      </div>
+                    </label>
+
+                    {form.confirmPassword &&
+                      form.password === form.confirmPassword && (
+                        <p className="password-match">
+                          <FiCheck />
+                          {t("auth.passwordsMatch")}
+                        </p>
+                      )}
+                  </>
+                )}
+
+                {authMode === "signup" && (
+                  <label className="signup-checkbox">
+                    <input
+                      type="checkbox"
+                      checked={form.terms}
+                      onChange={(event) =>
+                        setForm((prev) => ({
+                          ...prev,
+                          terms: event.target.checked,
+                        }))
+                      }
+                    />
+
+                    <span>
+                      {t("auth.termsText")}{" "}
+                      <button className="signup-inline-link" type="button">
+                        {t("auth.terms")}
+                      </button>{" "}
+                      {t("auth.and")}{" "}
+                      <button className="signup-inline-link" type="button">
+                        {t("auth.privacy")}
+                      </button>
+                    </span>
+                  </label>
+                )}
+
+                {authMode === "login" && (
+                  <div className="login-options">
+                    <label className="signup-checkbox login-remember">
+                      <input
+                        type="checkbox"
+                        checked={form.remember}
+                        onChange={(event) =>
+                          setForm((prev) => ({
+                            ...prev,
+                            remember: event.target.checked,
+                          }))
+                        }
+                      />
+
+                      <span>{t("auth.rememberMe")}</span>
+                    </label>
+
+                    <button
+                      className="forgot-password-button"
+                      type="button"
+                      onClick={() => switchAuthMode("forgot")}
+                    >
+                      {t("auth.forgotPassword")}
+                    </button>
+                  </div>
+                )}
+
+                {error && <div className="signup-error">{error}</div>}
+
+                <button
+                  className="accent-button modal-submit signup-submit-pro"
+                  type="submit"
+                >
+                  {authMode === "signup" && t("auth.createAccount")}
+
+                  {authMode === "login" && t("auth.login")}
+
+                  {authMode === "forgot" && t("auth.resetPassword")}
+                </button>
+
+                {authMode !== "forgot" && (
+                  <>
+                    <div className="signup-divider">
+                      <span />
+
+                      <small>{t("auth.orContinue")}</small>
+
+                      <span />
+                    </div>
+
+                    <button
+                      className="google-signup"
+                      type="button"
+                      onClick={() =>
+                        alert(
+                          "Google authentication can be connected with Firebase."
+                        )
+                      }
+                    >
+                      <strong>G</strong>
+
+                      {t("auth.continueGoogle")}
+                    </button>
+                  </>
+                )}
+
+                {authMode === "signup" && (
+                  <p className="login-text">
+                    {t("auth.alreadyAccount")}{" "}
+                    <button
+                      type="button"
+                      onClick={() => switchAuthMode("login")}
+                    >
+                      {t("auth.login")}
+                    </button>
+                  </p>
+                )}
+
+                {authMode === "login" && (
+                  <p className="login-text">
+                    {t("auth.noAccount")}{" "}
+                    <button
+                      type="button"
+                      onClick={() => switchAuthMode("signup")}
+                    >
+                      {t("auth.signup")}
+                    </button>
+                  </p>
+                )}
+
+                {authMode !== "forgot" && (
+                  <div className="signup-benefits">
+                    <span>
+                      <FiCheck />
+                      {t("auth.favouriteCities")}
+                    </span>
+
+                    <span>
+                      <FiCheck />
+                      {t("auth.weatherAlerts")}
+                    </span>
+
+                    <span>
+                      <FiCheck />
+                      {t("auth.personalSettings")}
+                    </span>
+                  </div>
+                )}
+              </>
+            )}
           </form>
         </div>
       )}

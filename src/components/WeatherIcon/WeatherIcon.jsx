@@ -9,7 +9,9 @@ import {
   WiSnow,
   WiSleet,
   WiThunderstorm,
-} from 'react-icons/wi';
+} from "react-icons/wi";
+
+import { useLanguage } from "../context/LanguageContext.jsx";
 
 const icons = {
   sun: WiDaySunny,
@@ -24,7 +26,26 @@ const icons = {
   storm: WiThunderstorm,
 };
 
-export default function WeatherIcon({ type = 'partly', size = 72, title = 'Weather' }) {
+export default function WeatherIcon({ type = "partly", size = 72, title }) {
+  const { language } = useLanguage();
+
+  const defaultTitles = {
+    en: "Weather",
+    de: "Wetter",
+    uk: "Погода",
+    ru: "Погода",
+  };
+
   const Icon = icons[type] || WiDayCloudy;
-  return <Icon className="weather-glyph" size={size} aria-label={title} title={title} />;
+
+  const iconTitle = title || defaultTitles[language] || defaultTitles.en;
+
+  return (
+    <Icon
+      className="weather-glyph"
+      size={size}
+      aria-label={iconTitle}
+      title={iconTitle}
+    />
+  );
 }
