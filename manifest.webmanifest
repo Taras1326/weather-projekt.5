@@ -1,0 +1,14 @@
+{
+  "name": "24/7 Forecast",
+  "short_name": "24/7 Forecast",
+  "description": "Weather dashboard, map, air quality and travel planner.",
+  "start_url": "/weather-projekt.5/",
+  "scope": "/weather-projekt.5/",
+  "display": "standalone",
+  "background_color": "#ffffff",
+  "theme_color": "#ffad63",
+  "icons": [
+    { "src": "icon-192.png", "sizes": "192x192", "type": "image/png" },
+    { "src": "icon-512.png", "sizes": "512x512", "type": "image/png" }
+  ]
+}
