@@ -9,6 +9,7 @@ import WeeklyForecast from "./components/WeeklyForecast/WeeklyForecast";
 import ComfortAdvice from "./components/ComfortAdvice/ComfortAdvice";
 import News from "./components/News/News";
 import Gallery from "./components/Gallery/Gallery";
+import SupportChat from "./components/SupportChat/SupportChat";
 import Footer from "./components/Footer/Footer";
 
 import MapPage from "./pages/MapPage/MapPage";
@@ -445,6 +446,7 @@ export default function App() {
 
           <Gallery />
         </main>
+        
       )}
 
       <Footer onNavigate={navigate} />

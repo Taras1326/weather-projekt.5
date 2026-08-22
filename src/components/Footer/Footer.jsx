@@ -1,7 +1,10 @@
-import { FiFacebook, FiGithub, FiInstagram, FiMail } from "react-icons/fi";
+import { FiGithub } from "react-icons/fi";
+import { FaFacebookF, FaInstagram, FaWhatsapp } from "react-icons/fa";
 
 import logo from "../Header/logo-projekt.png";
 import { useLanguage } from "../context/LanguageContext.jsx";
+
+import "./Footer.css";
 
 export default function Footer({ onNavigate }) {
   const { language, t } = useLanguage();
@@ -50,74 +53,106 @@ export default function Footer({ onNavigate }) {
 
   const currentText = text[language] || text.en;
 
+  const navigate = (target) => {
+    onNavigate?.(target);
+
+    window.scrollTo({
+      top: 0,
+      behavior: "smooth",
+    });
+  };
+
   return (
     <footer className="footer" id="contacts">
       <div className="footer-inner container-wide">
-        <img src={logo} alt="24/7 Forecast" className="footer-logo-img" />
+        <button
+          className="footer-logo-button"
+          type="button"
+          onClick={() => navigate("home")}
+          aria-label="24/7 Forecast home"
+        >
+          <img
+            src={logo}
+            alt="24/7 Forecast"
+            className="footer-logo-img"
+            draggable="false"
+          />
+        </button>
 
-        <div>
+        <div className="footer-column">
           <h3>{currentText.explore}</h3>
 
-          <button type="button" onClick={() => onNavigate("home")}>
+          <button type="button" onClick={() => navigate("home")}>
             {t("nav.dashboard")}
           </button>
 
-          <button type="button" onClick={() => onNavigate("map")}>
+          <button type="button" onClick={() => navigate("map")}>
             {t("nav.map")}
           </button>
 
-          <button type="button" onClick={() => onNavigate("travel")}>
+          <button type="button" onClick={() => navigate("travel")}>
             {t("nav.travel")}
           </button>
         </div>
 
-        <div>
+        <div className="footer-column">
           <h3>{currentText.address}</h3>
 
           <p>
             {currentText.street}
             <br />
-
             {currentText.city}
             <br />
-
             {currentText.country}
           </p>
         </div>
 
-        <div>
+        <div className="footer-column footer-contact">
           <h3>{currentText.contactUs}</h3>
 
           <div className="socials">
             <a
-              href="https://github.com/Taras1326/weather-projekt.5"
-              target="_blank"
-              rel="noreferrer"
-              aria-label="GitHub"
-            >
-              <FiGithub />
-            </a>
-
-            <a
+              className="social-link social-instagram"
               href="https://instagram.com/"
               target="_blank"
               rel="noreferrer"
               aria-label="Instagram"
+              title="Instagram"
             >
-              <FiInstagram />
+              <FaInstagram />
             </a>
 
             <a
+              className="social-link social-facebook"
               href="https://facebook.com/"
               target="_blank"
               rel="noreferrer"
               aria-label="Facebook"
+              title="Facebook"
             >
-              <FiFacebook />
+              <FaFacebookF />
             </a>
 
-            <a href="mailto:weather@example.com" aria-label="E-Mail">
-              <FiMail />
+            <a
+              className="social-link social-whatsapp"
+              href="https://wa.me/"
+              target="_blank"
+              rel="noreferrer"
+              aria-label="WhatsApp"
+              title="WhatsApp"
+            >
+              <FaWhatsapp />
+            </a>
+
+            <a
+              className="social-link social-github"
+              href="https://github.com/Taras1326/weather-projekt.5"
+              target="_blank"
+              rel="noreferrer"
+              aria-label="GitHub"
+              title="GitHub"
+            >
+              <FiGithub />
             </a>
           </div>
         </div>
@@ -125,7 +160,6 @@ export default function Footer({ onNavigate }) {
 
       <div className="footer-bottom container-wide">
         <span>© 2026 24/7 Forecast · {t("footer.rights")}</span>
-
         <span>{currentText.weatherData}</span>
       </div>
     </footer>

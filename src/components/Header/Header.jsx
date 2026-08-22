@@ -23,7 +23,6 @@ import {
 } from "react-icons/fi";
 
 import logo from "./logo-projekt.png";
-
 import { useLanguage } from "../context/LanguageContext.jsx";
 
 export default function Header({
@@ -67,30 +66,10 @@ export default function Header({
   });
 
   const languages = [
-    {
-      code: "en",
-      flag: "🇬🇧",
-      short: "EN",
-      name: "English",
-    },
-    {
-      code: "de",
-      flag: "🇩🇪",
-      short: "DE",
-      name: "Deutsch",
-    },
-    {
-      code: "uk",
-      flag: "🇺🇦",
-      short: "UA",
-      name: "Українська",
-    },
-    {
-      code: "ru",
-      flag: "🇷🇺",
-      short: "RU",
-      name: "Русский",
-    },
+    { code: "en", flag: "🇬🇧", short: "EN", name: "English" },
+    { code: "de", flag: "🇩🇪", short: "DE", name: "Deutsch" },
+    { code: "uk", flag: "🇺🇦", short: "UA", name: "Українська" },
+    { code: "ru", flag: "🇷🇺", short: "RU", name: "Русский" },
   ];
 
   const currentLanguage =
@@ -150,17 +129,14 @@ export default function Header({
 
     setShowPassword(false);
     setShowConfirmPassword(false);
-
     setError("");
     setSuccess(false);
   };
 
   const openAuth = (mode) => {
     resetForm();
-
     setAuthMode(mode);
     setAuthOpen(true);
-
     setProfileOpen(false);
     setLanguageOpen(false);
   };
@@ -342,22 +318,13 @@ export default function Header({
   const handleSubmit = (event) => {
     event.preventDefault();
 
-    if (authMode === "signup") {
-      signup();
-    }
-
-    if (authMode === "login") {
-      login();
-    }
-
-    if (authMode === "forgot") {
-      forgotPassword();
-    }
+    if (authMode === "signup") signup();
+    if (authMode === "login") login();
+    if (authMode === "forgot") forgotPassword();
   };
 
   const logout = () => {
     localStorage.removeItem("weather-user");
-
     setUser(null);
     setProfileOpen(false);
   };
@@ -390,8 +357,14 @@ export default function Header({
             className="brand-button"
             type="button"
             onClick={() => nav("home")}
+            aria-label="24/7 Forecast home"
           >
-            <img src={logo} alt="24/7 forecast" />
+            <img
+              className="theme-logo"
+              src={logo}
+              alt="24/7 Forecast"
+              draggable="false"
+            />
           </button>
 
           <nav className="desktop-nav">
@@ -429,16 +402,12 @@ export default function Header({
                 type="button"
                 onClick={() => {
                   setLanguageOpen((value) => !value);
-
                   setProfileOpen(false);
                 }}
               >
                 <FiGlobe />
-
                 <span className="language-flag">{currentLanguage.flag}</span>
-
                 <strong>{currentLanguage.short}</strong>
-
                 <FiChevronDown
                   className={
                     languageOpen ? "language-arrow open" : "language-arrow"
@@ -450,7 +419,6 @@ export default function Header({
                 <div className="language-dropdown">
                   <div className="language-dropdown-title">
                     <FiGlobe />
-
                     <span>{t("language")}</span>
                   </div>
 
@@ -461,16 +429,13 @@ export default function Header({
                       className={language === item.code ? "active" : ""}
                       onClick={() => {
                         setLanguage(item.code);
-
                         setLanguageOpen(false);
                       }}
                     >
                       <span className="language-dropdown-flag">
                         {item.flag}
                       </span>
-
                       <span>{item.name}</span>
-
                       {language === item.code && <FiCheck />}
                     </button>
                   ))}
@@ -490,6 +455,7 @@ export default function Header({
               className="icon-button theme-toggle"
               type="button"
               onClick={onToggleTheme}
+              aria-label="Toggle theme"
             >
               {theme === "dark" ? <FiSun /> : <FiMoon />}
             </button>
@@ -550,7 +516,6 @@ export default function Header({
 
                     <div>
                       <strong>{user.username}</strong>
-
                       <span>{user.email}</span>
                     </div>
                   </div>
@@ -595,6 +560,7 @@ export default function Header({
               className="mobile-nav-toggle icon-button"
               type="button"
               onClick={() => setMobileOpen((value) => !value)}
+              aria-label={mobileOpen ? "Close menu" : "Open menu"}
             >
               {mobileOpen ? <FiX /> : <FiMenu />}
             </button>
@@ -650,9 +616,7 @@ export default function Header({
             <div className="mobile-quick-settings">
               <button type="button" onClick={onToggleUnit}>
                 <span className="mobile-setting-icon">°{unit}</span>
-
                 <span>{t("settings.temperatureUnit")}</span>
-
                 <strong>°{unit}</strong>
               </button>
 
@@ -661,9 +625,7 @@ export default function Header({
                   <span className="mobile-setting-icon">
                     <FiBell />
                   </span>
-
                   <span>{t("profile.weatherAlerts")}</span>
-
                   <FiChevronDown className="mobile-row-arrow" />
                 </button>
               )}
@@ -680,7 +642,6 @@ export default function Header({
 
                   <div>
                     <strong>{user.username}</strong>
-
                     <span>{user.email}</span>
                   </div>
                 </div>
@@ -773,9 +734,7 @@ export default function Header({
                 {authMode === "signup" && (
                   <>
                     <h2>{t("auth.createAccount")}</h2>
-
                     <p>{t("auth.successAccount")}</p>
-
                     <strong>{form.username}</strong>
                   </>
                 )}
@@ -783,7 +742,6 @@ export default function Header({
                 {authMode === "login" && (
                   <>
                     <h2>{t("auth.welcomeBack")}</h2>
-
                     <p>{t("auth.successLogin")}</p>
                   </>
                 )}
@@ -791,11 +749,8 @@ export default function Header({
                 {authMode === "forgot" && (
                   <>
                     <h2>{t("auth.checkInbox")}</h2>
-
                     <p>Password reset instructions would be sent to:</p>
-
                     <strong>{form.email}</strong>
-
                     <p className="demo-notice">
                       Demo mode: real email sending requires Firebase or
                       Supabase.
@@ -806,13 +761,17 @@ export default function Header({
             ) : (
               <>
                 <div className="signup-brand">
-                  <img src={logo} alt="24/7 forecast" />
+                  <img
+                    className="theme-logo"
+                    src={logo}
+                    alt="24/7 Forecast"
+                    draggable="false"
+                  />
                 </div>
 
                 {authMode === "signup" && (
                   <>
                     <h2>{t("auth.createAccount")}</h2>
-
                     <p className="signup-description">
                       {t("auth.createDescription")}
                     </p>
@@ -822,7 +781,6 @@ export default function Header({
                 {authMode === "login" && (
                   <>
                     <h2>{t("auth.welcomeBack")}</h2>
-
                     <p className="signup-description">
                       {t("auth.loginDescription")}
                     </p>
@@ -863,7 +821,6 @@ export default function Header({
                             ...prev,
                             username: event.target.value,
                           }));
-
                           setError("");
                         }}
                         placeholder={t("auth.username")}
@@ -886,7 +843,6 @@ export default function Header({
                           ...prev,
                           email: event.target.value,
                         }));
-
                         setError("");
                       }}
                       placeholder="name@example.com"
@@ -909,7 +865,6 @@ export default function Header({
                             ...prev,
                             password: event.target.value,
                           }));
-
                           setError("");
                         }}
                         placeholder={t("auth.password")}
@@ -930,7 +885,6 @@ export default function Header({
                   <div className="password-info">
                     <div className="password-strength-top">
                       <span>{t("auth.passwordStrength")}</span>
-
                       <strong>{passwordStrength}</strong>
                     </div>
 
@@ -987,7 +941,6 @@ export default function Header({
                               ...prev,
                               confirmPassword: event.target.value,
                             }));
-
                             setError("");
                           }}
                           placeholder={t("auth.repeatPassword")}
@@ -1075,9 +1028,7 @@ export default function Header({
                   type="submit"
                 >
                   {authMode === "signup" && t("auth.createAccount")}
-
                   {authMode === "login" && t("auth.login")}
-
                   {authMode === "forgot" && t("auth.resetPassword")}
                 </button>
 
@@ -1085,9 +1036,7 @@ export default function Header({
                   <>
                     <div className="signup-divider">
                       <span />
-
                       <small>{t("auth.orContinue")}</small>
-
                       <span />
                     </div>
 
@@ -1101,7 +1050,6 @@ export default function Header({
                       }
                     >
                       <strong>G</strong>
-
                       {t("auth.continueGoogle")}
                     </button>
                   </>
