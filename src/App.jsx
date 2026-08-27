@@ -9,11 +9,17 @@ import WeeklyForecast from "./components/WeeklyForecast/WeeklyForecast";
 import ComfortAdvice from "./components/ComfortAdvice/ComfortAdvice";
 import News from "./components/News/News";
 import Gallery from "./components/Gallery/Gallery";
+import WeatherAlerts from "./components/WeatherAlerts/WeatherAlerts";
 import SupportChat from "./components/SupportChat/SupportChat";
 import Footer from "./components/Footer/Footer";
 
+import WeatherInsights from "./components/WeatherInsights/WeatherInsights";
+
 import MapPage from "./pages/MapPage/MapPage";
 import TravelPage from "./pages/TravelPage/TravelPage";
+
+import TermsPage from "./pages/TermsPage";
+import PrivacyPage from "./pages/PrivacyPage";
 
 import { getWeatherByCity, getWeatherByCoords } from "./services/weatherApi";
 
@@ -406,6 +412,10 @@ export default function App() {
         />
       ) : page === "travel" ? (
         <TravelPage unit={unit} />
+      ) : page === "terms" ? (
+        <TermsPage />
+      ) : page === "privacy" ? (
+        <PrivacyPage />
       ) : (
         <main>
           <Hero
@@ -442,14 +452,19 @@ export default function App() {
 
           <WeeklyForecast city={selectedCity} unit={unit} />
 
+          <WeatherInsights city={selectedCity} />
+
           <News />
 
           <Gallery />
         </main>
-        
       )}
 
       <Footer onNavigate={navigate} />
+
+      <WeatherAlerts weather={selectedCity} />
+
+      <SupportChat />
     </div>
   );
 }

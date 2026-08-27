@@ -1,0 +1,362 @@
+.weather-alerts {
+    position: fixed ;
+    right: 24px ;
+    bottom: 110px ;
+  
+    z-index: 999999 ;
+  
+    display: block ;
+    visibility: visible ;
+    opacity: 1 ;
+  }
+  
+  .weather-alerts__button {
+    position: relative;
+  
+    width: 60px;
+    height: 60px;
+  
+    display: flex !important;
+    align-items: center;
+    justify-content: center;
+  
+    border: none;
+    border-radius: 50%;
+  
+    background: #2563eb;
+    color: white;
+  
+    font-size: 26px;
+  
+    cursor: pointer;
+  
+    box-shadow: 0 8px 25px rgba(0, 0, 0, 0.25);
+  
+    z-index: 999999 !important;
+  }
+  
+  .weather-alerts__button:hover {
+    transform: translateY(-3px);
+  
+    box-shadow:
+      0 14px 35px rgba(15, 23, 42, 0.2),
+      0 4px 12px rgba(15, 23, 42, 0.1);
+  }
+  
+  .weather-alerts__badge {
+    position: absolute;
+    top: -3px;
+    right: -3px;
+  
+    min-width: 21px;
+    height: 21px;
+  
+    padding: 0 5px;
+  
+    display: flex;
+    align-items: center;
+    justify-content: center;
+  
+    border: 2px solid #ffffff;
+    border-radius: 999px;
+  
+    background: #ef4444;
+    color: #ffffff;
+  
+    font-size: 11px;
+    font-weight: 700;
+  }
+  
+  .weather-alerts__panel {
+    position: absolute;
+    right: 0;
+    bottom: 74px;
+  
+    width: 340px;
+    max-height: 520px;
+  
+    padding: 20px;
+  
+    overflow-y: auto;
+  
+    border: 1px solid rgba(148, 163, 184, 0.2);
+    border-radius: 24px;
+  
+    background: rgba(255, 255, 255, 0.97);
+  
+    box-shadow:
+      0 24px 60px rgba(15, 23, 42, 0.18),
+      0 6px 18px rgba(15, 23, 42, 0.08);
+  
+    backdrop-filter: blur(18px);
+  
+    animation: alertsOpen 0.25s ease;
+  }
+  
+  @keyframes alertsOpen {
+    from {
+      opacity: 0;
+      transform: translateY(12px) scale(0.97);
+    }
+  
+    to {
+      opacity: 1;
+      transform: translateY(0) scale(1);
+    }
+  }
+  
+  .weather-alerts__header {
+    display: flex;
+    align-items: flex-start;
+    justify-content: space-between;
+  
+    gap: 16px;
+  
+    margin-bottom: 18px;
+  }
+  
+  .weather-alerts__header h3 {
+    margin: 3px 0 0;
+  
+    color: #111827;
+  
+    font-size: 20px;
+    line-height: 1.2;
+  }
+  
+  .weather-alerts__eyebrow {
+    margin: 0;
+  
+    color: #64748b;
+  
+    font-size: 12px;
+    font-weight: 600;
+  
+    text-transform: uppercase;
+    letter-spacing: 0.08em;
+  }
+  
+  .weather-alerts__close {
+    width: 34px;
+    height: 34px;
+  
+    flex-shrink: 0;
+  
+    display: flex;
+    align-items: center;
+    justify-content: center;
+  
+    border: none;
+    border-radius: 50%;
+  
+    background: #f1f5f9;
+    color: #475569;
+  
+    font-size: 18px;
+  
+    cursor: pointer;
+  }
+  
+  .weather-alerts__list {
+    display: flex;
+    flex-direction: column;
+  
+    gap: 10px;
+  }
+  
+  .weather-alerts__item {
+    display: flex;
+  
+    gap: 12px;
+  
+    padding: 14px;
+  
+    border-radius: 16px;
+  
+    background: #f8fafc;
+  }
+  
+  .weather-alerts__item-icon {
+    width: 46px;
+    height: 46px;
+  
+    min-width: 46px;
+  
+    display: flex;
+    align-items: center;
+    justify-content: center;
+  
+    border-radius: 14px;
+  
+    font-size: 21px;
+  }
+  
+  .weather-alerts__item-icon svg {
+    width: 21px;
+    height: 21px;
+  }
+  
+  .weather-alerts__item h4,
+  .weather-alerts__empty h4 {
+    margin: 0 0 4px;
+  
+    color: #0f172a;
+  
+    font-size: 14px;
+    font-weight: 700;
+  }
+  
+  .weather-alerts__item p,
+  .weather-alerts__empty p {
+    margin: 0;
+  
+    color: #64748b;
+  
+    font-size: 12px;
+    line-height: 1.5;
+  }
+  
+  .weather-alerts__item--warning .weather-alerts__item-icon {
+    background: #fff7ed;
+    color: #f97316;
+  }
+  
+  .weather-alerts__item--wind .weather-alerts__item-icon {
+    background: #eff6ff;
+    color: #3b82f6;
+  }
+  
+  .weather-alerts__empty {
+    display: flex;
+  
+    gap: 12px;
+  
+    padding: 16px;
+  
+    border-radius: 16px;
+  
+    background: #f0fdf4;
+  }
+  
+  .weather-alerts__empty > svg {
+    flex-shrink: 0;
+  
+    color: #22c55e;
+  
+    font-size: 22px;
+  }
+  
+  .weather-alerts__types {
+    display: flex;
+    flex-wrap: wrap;
+  
+    gap: 8px;
+  
+    margin-top: 16px;
+    padding-top: 16px;
+  
+    border-top: 1px solid #e2e8f0;
+  }
+  
+  .weather-alerts__types span {
+    display: flex;
+    align-items: center;
+  
+    gap: 5px;
+  
+    padding: 7px 9px;
+  
+    border-radius: 999px;
+  
+    background: #f8fafc;
+    color: #64748b;
+  
+    font-size: 11px;
+  }
+  
+  .weather-alerts__types svg {
+    font-size: 13px;
+  }
+  
+  @media (max-width: 768px) {
+    .weather-alerts {
+      right: 14px;
+      bottom: 92px;
+    }
+  
+    .weather-alerts__button {
+      width: 52px;
+      height: 52px;
+  
+      font-size: 21px;
+    }
+  
+    .weather-alerts__panel {
+      position: fixed;
+  
+      right: 14px;
+      bottom: 158px;
+  
+      width: calc(100% - 28px);
+      max-width: 340px;
+  
+      padding: 18px;
+    }
+  }
+  
+  @media (max-width: 380px) {
+    .weather-alerts__panel {
+      right: 10px;
+  
+      width: calc(100% - 20px);
+    }
+  }
+
+
+
+
+  /* ================================
+   ALERT COLORS
+================================ */
+
+/* Rain */
+.weather-alerts__item--rain .weather-alerts__item-icon {
+    background: #e0f2fe;
+    color: #0284c7;
+  }
+  
+  /* UV */
+  .weather-alerts__item--uv .weather-alerts__item-icon {
+    background: #fef3c7;
+    color: #f59e0b;
+  }
+  
+  /* Strong wind */
+  .weather-alerts__item--wind .weather-alerts__item-icon {
+    background: #e0f2fe;
+    color: #2563eb;
+  }
+  
+  /* Thunderstorm */
+  .weather-alerts__item--storm .weather-alerts__item-icon {
+    background: #ede9fe;
+    color: #7c3aed;
+  }
+  
+  /* Heat */
+  .weather-alerts__item--heat .weather-alerts__item-icon {
+    background: #fee2e2;
+    color: #ef4444;
+  }
+  
+  /* Cold */
+  .weather-alerts__item--cold .weather-alerts__item-icon {
+    background: #dbeafe;
+    color: #2563eb;
+  }
+  
+  /* Snow */
+  .weather-alerts__item--snow .weather-alerts__item-icon {
+    background: #ecfeff;
+    color: #0891b2;
+  }

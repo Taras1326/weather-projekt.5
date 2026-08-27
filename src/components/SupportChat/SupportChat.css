@@ -39,7 +39,7 @@
   
   .support-chat {
     position: fixed;
-  
+
     right: 30px;
     bottom: 105px;
   
@@ -57,7 +57,7 @@
   
     box-shadow: 0 18px 60px rgba(0, 0, 0, 0.2);
   
-    z-index: 9998;
+    z-index: 999999;
   }
   
   
@@ -253,4 +253,44 @@
       width: 55px;
       height: 55px;
     }
+  }
+
+
+
+
+  .quick-questions {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 8px;
+  
+    margin-top: 14px;
+    margin-bottom: 18px;
+  }
+  
+  .quick-question {
+    padding: 8px 12px;
+  
+    border: 1px solid #ddd;
+    border-radius: 20px;
+  
+    background: #fff;
+    color: #222;
+  
+    font-size: 13px;
+  
+    cursor: pointer;
+  
+    transition:
+      background 0.2s ease,
+      color 0.2s ease,
+      border-color 0.2s ease,
+      transform 0.2s ease;
+  }
+  
+  .quick-question:hover {
+    background: #111;
+    color: #fff;
+    border-color: #111;
+  
+    transform: translateY(-1px);
   }
