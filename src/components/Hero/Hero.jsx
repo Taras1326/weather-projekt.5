@@ -1,6 +1,8 @@
 import { useEffect, useMemo, useState } from "react";
 import { FiCrosshair, FiSearch, FiX } from "react-icons/fi";
 
+import "./Hero.css";
+
 import { searchCities } from "../../services/weatherApi";
 import { useLanguage } from "../context/LanguageContext.jsx";
 
@@ -32,7 +34,7 @@ export default function Hero({ onSearch, onUseLocation, loading }) {
       try {
         setSearching(true);
 
-        const result = await searchCities(query.trim(), 6);
+        const result = await searchCities(query.trim(), 10);
 
         setSuggestions(result);
       } catch {
@@ -68,13 +70,16 @@ export default function Hero({ onSearch, onUseLocation, loading }) {
     <section className="hero" id="about">
       <div className="hero-overlay" />
 
-      <div className="hero-content container-wide">
+      <div className="hero-content ">
+        {/* LIVE WEATHER */}
         <p className="hero-kicker">{t("hero.badge")}</p>
 
-        <h1>{t("hero.title")}</h1>
+        {/* TITLE */}
+        <h1 className="hero-title">{t("hero.title")}</h1>
 
+        {/* DESCRIPTION + DATE */}
         <div className="hero-info">
-          <p>{t("hero.subtitle")}</p>
+          <p className="hero-description">{t("hero.subtitle")}</p>
 
           <div className="hero-divider" />
 
@@ -88,22 +93,25 @@ export default function Hero({ onSearch, onUseLocation, loading }) {
 
             <strong>
               {now.toLocaleDateString(currentLocale, {
-                weekday: "long",
                 day: "numeric",
+                weekday: "long",
               })}
             </strong>
           </div>
         </div>
 
+        {/* SEARCH */}
         <div className="hero-search-wrap">
           <form className="hero-search" onSubmit={submit}>
             <FiSearch className="search-leading" />
 
             <input
+              type="text"
               value={query}
               onChange={(event) => setQuery(event.target.value)}
               placeholder={t("hero.searchPlaceholder")}
               aria-label={t("common.searchCity")}
+              autoComplete="off"
             />
 
             {query && (
@@ -126,22 +134,28 @@ export default function Hero({ onSearch, onUseLocation, loading }) {
               disabled={loading}
               aria-label={t("common.search")}
             >
-              {loading ? "..." : <FiSearch />}
+              {loading ? (
+                <span className="search-loader">...</span>
+              ) : (
+                <FiSearch />
+              )}
             </button>
           </form>
 
+          {/* LOCATION */}
           <button
             className="location-button"
             type="button"
             onClick={onUseLocation}
+            disabled={loading}
           >
             <FiCrosshair />
-
-            {t("hero.locationButton")}
+            <span>{t("hero.locationButton")}</span>
           </button>
 
+          {/* SUGGESTIONS */}
           {(suggestions.length > 0 || searching) && (
-            <div className="search-suggestions glass-panel">
+            <div className="search-suggestions">
               {searching && (
                 <div className="suggestion-status">{t("common.loading")}</div>
               )}

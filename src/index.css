@@ -110,3 +110,171 @@ code {
   padding: 4px 8px;
   background: var(--code-bg);
 }
+
+
+
+/* =========================
+   PAGE LOAD ANIMATION
+========================= */
+
+body {
+  animation: pageLoad 0.8s ease-out;
+}
+
+@keyframes pageLoad {
+  from {
+    opacity: 0;
+    transform: translateY(15px);
+  }
+
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
+
+
+/* =========================
+   SMOOTH SCROLL
+========================= */
+
+html {
+  scroll-behavior: smooth;
+}
+
+
+/* =========================
+   SCROLL REVEAL
+========================= */
+
+.reveal {
+  opacity: 0;
+  transform: translateY(40px);
+
+  transition:
+    opacity 0.7s ease,
+    transform 0.7s ease;
+}
+
+.reveal.visible {
+  opacity: 1;
+  transform: translateY(0);
+}
+
+
+/* Варіант появи зліва */
+
+.reveal-left {
+  opacity: 0;
+  transform: translateX(-50px);
+
+  transition:
+    opacity 0.7s ease,
+    transform 0.7s ease;
+}
+
+.reveal-left.visible {
+  opacity: 1;
+  transform: translateX(0);
+}
+
+
+/* Варіант появи справа */
+
+.reveal-right {
+  opacity: 0;
+  transform: translateX(50px);
+
+  transition:
+    opacity 0.7s ease,
+    transform 0.7s ease;
+}
+
+.reveal-right.visible {
+  opacity: 1;
+  transform: translateX(0);
+}
+
+
+/* Варіант збільшення */
+
+.reveal-scale {
+  opacity: 0;
+  transform: scale(0.92);
+
+  transition:
+    opacity 0.7s ease,
+    transform 0.7s ease;
+}
+
+.reveal-scale.visible {
+  opacity: 1;
+  transform: scale(1);
+}
+
+
+/* Для людей, які вимкнули анімації */
+
+@media (prefers-reduced-motion: reduce) {
+  html {
+    scroll-behavior: auto;
+  }
+
+  body,
+  .reveal,
+  .reveal-left,
+  .reveal-right,
+  .reveal-scale {
+    animation: none;
+    transition: none;
+    transform: none;
+    opacity: 1;
+  }
+}
+
+
+
+
+/* ========================================
+   CUSTOM SCROLLBAR
+======================================== */
+
+html {
+  scroll-behavior: smooth;
+  overflow-y: scroll;
+  scrollbar-width: thin;
+  scrollbar-color: #a23af4 #f2eef5;
+}
+
+/* Chrome / Edge / Safari */
+
+::-webkit-scrollbar {
+  width: 12px;
+}
+
+::-webkit-scrollbar-track {
+  background: #f2eef5;
+}
+
+::-webkit-scrollbar-thumb {
+  min-height: 60px;
+
+  border: 3px solid #f2eef5;
+  border-radius: 999px;
+
+  background:
+    linear-gradient(
+      180deg,
+      #b84cff,
+      #8434e8
+    );
+}
+
+::-webkit-scrollbar-thumb:hover {
+  background:
+    linear-gradient(
+      180deg,
+      #a63bf2,
+      #7428d5
+    );
+}

@@ -20,6 +20,7 @@ import {
   FiHeart,
   FiGlobe,
   FiChevronDown,
+  FiPlayCircle,
 } from "react-icons/fi";
 
 import logo from "./logo-projekt.png";
@@ -66,14 +67,45 @@ export default function Header({
   });
 
   const languages = [
-    { code: "en", flag: "🇬🇧", short: "EN", name: "English" },
-    { code: "de", flag: "🇩🇪", short: "DE", name: "Deutsch" },
-    { code: "uk", flag: "🇺🇦", short: "UA", name: "Українська" },
-    { code: "ru", flag: "🇷🇺", short: "RU", name: "Русский" },
+    {
+      code: "en",
+      flag: "🇬🇧",
+      short: "EN",
+      name: "English",
+    },
+    {
+      code: "de",
+      flag: "🇩🇪",
+      short: "DE",
+      name: "Deutsch",
+    },
+    {
+      code: "uk",
+      flag: "🇺🇦",
+      short: "UA",
+      name: "Українська",
+    },
+    {
+      code: "ru",
+      flag: "🇷🇺",
+      short: "RU",
+      name: "Русский",
+    },
   ];
+
+  const gamesText = {
+    en: "Games",
+    de: "Spiele",
+    uk: "Ігри",
+    ru: "Игры",
+  };
 
   const currentLanguage =
     languages.find((item) => item.code === language) || languages[0];
+
+  /* =====================================================
+     RESPONSIVE
+  ===================================================== */
 
   useEffect(() => {
     const handleResize = () => {
@@ -83,12 +115,17 @@ export default function Header({
     };
 
     window.addEventListener("resize", handleResize);
+
     handleResize();
 
     return () => {
       window.removeEventListener("resize", handleResize);
     };
   }, []);
+
+  /* =====================================================
+     MOBILE BODY LOCK
+  ===================================================== */
 
   useEffect(() => {
     if (!mobileOpen || window.innerWidth > 768) {
@@ -97,12 +134,17 @@ export default function Header({
     }
 
     const previousOverflow = document.body.style.overflow;
+
     document.body.style.overflow = "hidden";
 
     return () => {
       document.body.style.overflow = previousOverflow;
     };
   }, [mobileOpen]);
+
+  /* =====================================================
+     NAVIGATION
+  ===================================================== */
 
   const nav = (target) => {
     onNavigate?.(target);
@@ -117,6 +159,10 @@ export default function Header({
     });
   };
 
+  /* =====================================================
+     AUTH
+  ===================================================== */
+
   const resetForm = () => {
     setForm({
       username: "",
@@ -129,14 +175,17 @@ export default function Header({
 
     setShowPassword(false);
     setShowConfirmPassword(false);
+
     setError("");
     setSuccess(false);
   };
 
   const openAuth = (mode) => {
     resetForm();
+
     setAuthMode(mode);
     setAuthOpen(true);
+
     setProfileOpen(false);
     setLanguageOpen(false);
   };
@@ -154,6 +203,10 @@ export default function Header({
     resetForm();
     setAuthMode(mode);
   };
+
+  /* =====================================================
+     SIGN UP
+  ===================================================== */
 
   const signup = () => {
     setError("");
@@ -224,12 +277,17 @@ export default function Header({
     localStorage.setItem("weather-user", JSON.stringify(publicUser));
 
     setUser(publicUser);
+
     setSuccess(true);
 
     setTimeout(() => {
       closeAuth();
     }, 1700);
   };
+
+  /* =====================================================
+     LOGIN
+  ===================================================== */
 
   const login = () => {
     setError("");
@@ -281,12 +339,17 @@ export default function Header({
     }
 
     setUser(publicUser);
+
     setSuccess(true);
 
     setTimeout(() => {
       closeAuth();
     }, 1500);
   };
+
+  /* =====================================================
+     FORGOT PASSWORD
+  ===================================================== */
 
   const forgotPassword = () => {
     setError("");
@@ -318,16 +381,33 @@ export default function Header({
   const handleSubmit = (event) => {
     event.preventDefault();
 
-    if (authMode === "signup") signup();
-    if (authMode === "login") login();
-    if (authMode === "forgot") forgotPassword();
+    if (authMode === "signup") {
+      signup();
+    }
+
+    if (authMode === "login") {
+      login();
+    }
+
+    if (authMode === "forgot") {
+      forgotPassword();
+    }
   };
+
+  /* =====================================================
+     LOGOUT
+  ===================================================== */
 
   const logout = () => {
     localStorage.removeItem("weather-user");
+
     setUser(null);
     setProfileOpen(false);
   };
+
+  /* =====================================================
+     PASSWORD STRENGTH
+  ===================================================== */
 
   const passwordChecks = {
     length: form.password.length >= 8,
@@ -353,6 +433,8 @@ export default function Header({
     <>
       <header className="site-header">
         <div className="header-inner container-wide">
+          {/* LOGO */}
+
           <button
             className="brand-button"
             type="button"
@@ -367,47 +449,79 @@ export default function Header({
             />
           </button>
 
+          {/* DESKTOP NAVIGATION */}
+
           <nav className="desktop-nav">
             <button
               className={page === "home" ? "active" : ""}
+              type="button"
               onClick={() => nav("home")}
             >
               <FiHome />
+
               {t("nav.dashboard")}
             </button>
 
             <button
               className={page === "map" ? "active" : ""}
+              type="button"
               onClick={() => nav("map")}
             >
               <FiMap />
+
               {t("nav.map")}
             </button>
 
             <button
               className={page === "travel" ? "active" : ""}
+              type="button"
               onClick={() => nav("travel")}
             >
               <FiCompass />
+
               {t("nav.travel")}
+            </button>
+
+            {/* NEW GAMES BUTTON */}
+
+            <button
+              className={
+                page === "games"
+                  ? "active games-nav-button"
+                  : "games-nav-button"
+              }
+              type="button"
+              onClick={() => nav("games")}
+            >
+              <FiPlayCircle />
+
+              {gamesText[language] || "Games"}
             </button>
 
             <a href="#contacts">{t("nav.contacts")}</a>
           </nav>
 
+          {/* HEADER TOOLS */}
+
           <div className="header-tools">
+            {/* LANGUAGE */}
+
             <div className="language-selector">
               <button
                 className="language-button"
                 type="button"
                 onClick={() => {
                   setLanguageOpen((value) => !value);
+
                   setProfileOpen(false);
                 }}
               >
                 <FiGlobe />
+
                 <span className="language-flag">{currentLanguage.flag}</span>
+
                 <strong>{currentLanguage.short}</strong>
+
                 <FiChevronDown
                   className={
                     languageOpen ? "language-arrow open" : "language-arrow"
@@ -419,6 +533,7 @@ export default function Header({
                 <div className="language-dropdown">
                   <div className="language-dropdown-title">
                     <FiGlobe />
+
                     <span>{t("language")}</span>
                   </div>
 
@@ -435,13 +550,17 @@ export default function Header({
                       <span className="language-dropdown-flag">
                         {item.flag}
                       </span>
+
                       <span>{item.name}</span>
+
                       {language === item.code && <FiCheck />}
                     </button>
                   ))}
                 </div>
               )}
             </div>
+
+            {/* UNIT */}
 
             <button
               className="unit-toggle"
@@ -450,6 +569,8 @@ export default function Header({
             >
               °{unit}
             </button>
+
+            {/* THEME */}
 
             <button
               className="icon-button theme-toggle"
@@ -460,15 +581,20 @@ export default function Header({
               {theme === "dark" ? <FiSun /> : <FiMoon />}
             </button>
 
+            {/* NOTIFICATION */}
+
             {user && (
               <button
                 className="icon-button"
                 type="button"
                 title="Notifications"
+                onClick={() => nav("alerts")}
               >
                 <FiBell />
               </button>
             )}
+
+            {/* SIGN UP */}
 
             {!user && (
               <button
@@ -480,6 +606,8 @@ export default function Header({
               </button>
             )}
 
+            {/* LOGIN */}
+
             {!user && (
               <button
                 className="header-login-button"
@@ -489,6 +617,8 @@ export default function Header({
                 {t("auth.login")}
               </button>
             )}
+
+            {/* PROFILE */}
 
             <div className="profile-wrap">
               <button
@@ -516,6 +646,7 @@ export default function Header({
 
                     <div>
                       <strong>{user.username}</strong>
+
                       <span>{user.email}</span>
                     </div>
                   </div>
@@ -524,21 +655,25 @@ export default function Header({
 
                   <button type="button" onClick={() => nav("profile")}>
                     <FiUser />
+
                     {t("profile.myProfile")}
                   </button>
 
                   <button type="button" onClick={() => nav("favorites")}>
                     <FiHeart />
+
                     {t("profile.myCities")}
                   </button>
 
                   <button type="button" onClick={() => nav("alerts")}>
                     <FiBell />
+
                     {t("profile.weatherAlerts")}
                   </button>
 
                   <button type="button" onClick={() => nav("settings")}>
                     <FiSettings />
+
                     {t("profile.settings")}
                   </button>
 
@@ -550,11 +685,14 @@ export default function Header({
                     onClick={logout}
                   >
                     <FiLogOut />
+
                     {t("profile.logout")}
                   </button>
                 </div>
               )}
             </div>
+
+            {/* MOBILE BUTTON */}
 
             <button
               className="mobile-nav-toggle icon-button"
@@ -566,6 +704,8 @@ export default function Header({
             </button>
           </div>
         </div>
+
+        {/* MOBILE NAVIGATION */}
 
         {mobileOpen && (
           <nav className="mobile-nav mobile-nav-pro">
@@ -580,6 +720,7 @@ export default function Header({
                 onClick={() => nav("home")}
               >
                 <FiHome />
+
                 <span>{t("nav.dashboard")}</span>
               </button>
 
@@ -589,6 +730,7 @@ export default function Header({
                 onClick={() => nav("map")}
               >
                 <FiMap />
+
                 <span>{t("nav.map")}</span>
               </button>
 
@@ -598,11 +740,25 @@ export default function Header({
                 onClick={() => nav("travel")}
               >
                 <FiCompass />
+
                 <span>{t("nav.travel")}</span>
+              </button>
+
+              {/* GAMES MOBILE */}
+
+              <button
+                className={page === "games" ? "active" : ""}
+                type="button"
+                onClick={() => nav("games")}
+              >
+                <FiPlayCircle />
+
+                <span>🎮 {gamesText[language] || "Games"}</span>
               </button>
 
               <a href="#contacts" onClick={() => setMobileOpen(false)}>
                 <FiMail />
+
                 <span>{t("nav.contacts")}</span>
               </a>
             </div>
@@ -616,7 +772,9 @@ export default function Header({
             <div className="mobile-quick-settings">
               <button type="button" onClick={onToggleUnit}>
                 <span className="mobile-setting-icon">°{unit}</span>
+
                 <span>{t("settings.temperatureUnit")}</span>
+
                 <strong>°{unit}</strong>
               </button>
 
@@ -625,7 +783,9 @@ export default function Header({
                   <span className="mobile-setting-icon">
                     <FiBell />
                   </span>
+
                   <span>{t("profile.weatherAlerts")}</span>
+
                   <FiChevronDown className="mobile-row-arrow" />
                 </button>
               )}
@@ -642,6 +802,7 @@ export default function Header({
 
                   <div>
                     <strong>{user.username}</strong>
+
                     <span>{user.email}</span>
                   </div>
                 </div>
@@ -649,21 +810,25 @@ export default function Header({
                 <div className="mobile-profile-links">
                   <button type="button" onClick={() => nav("profile")}>
                     <FiUser />
+
                     <span>{t("profile.myProfile")}</span>
                   </button>
 
                   <button type="button" onClick={() => nav("favorites")}>
                     <FiHeart />
+
                     <span>{t("profile.myCities")}</span>
                   </button>
 
                   <button type="button" onClick={() => nav("alerts")}>
                     <FiBell />
+
                     <span>{t("profile.weatherAlerts")}</span>
                   </button>
 
                   <button type="button" onClick={() => nav("settings")}>
                     <FiSettings />
+
                     <span>{t("profile.settings")}</span>
                   </button>
                 </div>
@@ -673,10 +838,12 @@ export default function Header({
                   className="mobile-logout-button"
                   onClick={() => {
                     logout();
+
                     setMobileOpen(false);
                   }}
                 >
                   <FiLogOut />
+
                   {t("profile.logout")}
                 </button>
               </>
@@ -687,10 +854,12 @@ export default function Header({
                   type="button"
                   onClick={() => {
                     setMobileOpen(false);
+
                     openAuth("signup");
                   }}
                 >
                   <FiUser />
+
                   {t("auth.signup")}
                 </button>
 
@@ -699,6 +868,7 @@ export default function Header({
                   type="button"
                   onClick={() => {
                     setMobileOpen(false);
+
                     openAuth("login");
                   }}
                 >
@@ -709,6 +879,10 @@ export default function Header({
           </nav>
         )}
       </header>
+
+      {/* =====================================================
+          AUTH MODAL
+      ===================================================== */}
 
       {authOpen && (
         <div className="modal-backdrop" onMouseDown={closeAuth}>
@@ -734,7 +908,9 @@ export default function Header({
                 {authMode === "signup" && (
                   <>
                     <h2>{t("auth.createAccount")}</h2>
+
                     <p>{t("auth.successAccount")}</p>
+
                     <strong>{form.username}</strong>
                   </>
                 )}
@@ -742,6 +918,7 @@ export default function Header({
                 {authMode === "login" && (
                   <>
                     <h2>{t("auth.welcomeBack")}</h2>
+
                     <p>{t("auth.successLogin")}</p>
                   </>
                 )}
@@ -749,8 +926,11 @@ export default function Header({
                 {authMode === "forgot" && (
                   <>
                     <h2>{t("auth.checkInbox")}</h2>
+
                     <p>Password reset instructions would be sent to:</p>
+
                     <strong>{form.email}</strong>
+
                     <p className="demo-notice">
                       Demo mode: real email sending requires Firebase or
                       Supabase.
@@ -772,6 +952,7 @@ export default function Header({
                 {authMode === "signup" && (
                   <>
                     <h2>{t("auth.createAccount")}</h2>
+
                     <p className="signup-description">
                       {t("auth.createDescription")}
                     </p>
@@ -781,6 +962,7 @@ export default function Header({
                 {authMode === "login" && (
                   <>
                     <h2>{t("auth.welcomeBack")}</h2>
+
                     <p className="signup-description">
                       {t("auth.loginDescription")}
                     </p>
@@ -795,6 +977,7 @@ export default function Header({
                       onClick={() => switchAuthMode("login")}
                     >
                       <FiArrowLeft />
+
                       {t("auth.backLogin")}
                     </button>
 
@@ -805,6 +988,8 @@ export default function Header({
                     </p>
                   </>
                 )}
+
+                {/* USERNAME */}
 
                 {authMode === "signup" && (
                   <label>
@@ -817,10 +1002,12 @@ export default function Header({
                         type="text"
                         value={form.username}
                         onChange={(event) => {
-                          setForm((prev) => ({
-                            ...prev,
+                          setForm((previous) => ({
+                            ...previous,
+
                             username: event.target.value,
                           }));
+
                           setError("");
                         }}
                         placeholder={t("auth.username")}
@@ -828,6 +1015,8 @@ export default function Header({
                     </div>
                   </label>
                 )}
+
+                {/* EMAIL */}
 
                 <label>
                   {t("auth.email")}
@@ -839,16 +1028,20 @@ export default function Header({
                       type="email"
                       value={form.email}
                       onChange={(event) => {
-                        setForm((prev) => ({
-                          ...prev,
+                        setForm((previous) => ({
+                          ...previous,
+
                           email: event.target.value,
                         }));
+
                         setError("");
                       }}
                       placeholder="name@example.com"
                     />
                   </div>
                 </label>
+
+                {/* PASSWORD */}
 
                 {authMode !== "forgot" && (
                   <label>
@@ -861,10 +1054,12 @@ export default function Header({
                         type={showPassword ? "text" : "password"}
                         value={form.password}
                         onChange={(event) => {
-                          setForm((prev) => ({
-                            ...prev,
+                          setForm((previous) => ({
+                            ...previous,
+
                             password: event.target.value,
                           }));
+
                           setError("");
                         }}
                         placeholder={t("auth.password")}
@@ -881,10 +1076,13 @@ export default function Header({
                   </label>
                 )}
 
+                {/* PASSWORD STRENGTH */}
+
                 {authMode === "signup" && form.password && (
                   <div className="password-info">
                     <div className="password-strength-top">
                       <span>{t("auth.passwordStrength")}</span>
+
                       <strong>{passwordStrength}</strong>
                     </div>
 
@@ -904,26 +1102,32 @@ export default function Header({
                     <div className="password-checks">
                       <span className={passwordChecks.length ? "valid" : ""}>
                         <FiCheck />
+
                         {t("auth.characters")}
                       </span>
 
                       <span className={passwordChecks.capital ? "valid" : ""}>
                         <FiCheck />
+
                         {t("auth.capital")}
                       </span>
 
                       <span className={passwordChecks.number ? "valid" : ""}>
                         <FiCheck />
+
                         {t("auth.number")}
                       </span>
 
                       <span className={passwordChecks.special ? "valid" : ""}>
                         <FiCheck />
+
                         {t("auth.special")}
                       </span>
                     </div>
                   </div>
                 )}
+
+                {/* CONFIRM PASSWORD */}
 
                 {authMode === "signup" && (
                   <>
@@ -937,10 +1141,12 @@ export default function Header({
                           type={showConfirmPassword ? "text" : "password"}
                           value={form.confirmPassword}
                           onChange={(event) => {
-                            setForm((prev) => ({
-                              ...prev,
+                            setForm((previous) => ({
+                              ...previous,
+
                               confirmPassword: event.target.value,
                             }));
+
                             setError("");
                           }}
                           placeholder={t("auth.repeatPassword")}
@@ -962,11 +1168,14 @@ export default function Header({
                       form.password === form.confirmPassword && (
                         <p className="password-match">
                           <FiCheck />
+
                           {t("auth.passwordsMatch")}
                         </p>
                       )}
                   </>
                 )}
+
+                {/* TERMS */}
 
                 {authMode === "signup" && (
                   <label className="signup-checkbox">
@@ -974,8 +1183,9 @@ export default function Header({
                       type="checkbox"
                       checked={form.terms}
                       onChange={(event) =>
-                        setForm((prev) => ({
-                          ...prev,
+                        setForm((previous) => ({
+                          ...previous,
+
                           terms: event.target.checked,
                         }))
                       }
@@ -983,16 +1193,34 @@ export default function Header({
 
                     <span>
                       {t("auth.termsText")}{" "}
-                      <button className="signup-inline-link" type="button">
+                      <button
+                        className="signup-inline-link"
+                        type="button"
+                        onClick={() => {
+                          closeAuth();
+
+                          nav("terms");
+                        }}
+                      >
                         {t("auth.terms")}
                       </button>{" "}
                       {t("auth.and")}{" "}
-                      <button className="signup-inline-link" type="button">
+                      <button
+                        className="signup-inline-link"
+                        type="button"
+                        onClick={() => {
+                          closeAuth();
+
+                          nav("privacy");
+                        }}
+                      >
                         {t("auth.privacy")}
                       </button>
                     </span>
                   </label>
                 )}
+
+                {/* LOGIN OPTIONS */}
 
                 {authMode === "login" && (
                   <div className="login-options">
@@ -1001,8 +1229,9 @@ export default function Header({
                         type="checkbox"
                         checked={form.remember}
                         onChange={(event) =>
-                          setForm((prev) => ({
-                            ...prev,
+                          setForm((previous) => ({
+                            ...previous,
+
                             remember: event.target.checked,
                           }))
                         }
@@ -1021,14 +1250,20 @@ export default function Header({
                   </div>
                 )}
 
+                {/* ERROR */}
+
                 {error && <div className="signup-error">{error}</div>}
+
+                {/* SUBMIT */}
 
                 <button
                   className="accent-button modal-submit signup-submit-pro"
                   type="submit"
                 >
                   {authMode === "signup" && t("auth.createAccount")}
+
                   {authMode === "login" && t("auth.login")}
+
                   {authMode === "forgot" && t("auth.resetPassword")}
                 </button>
 
@@ -1036,7 +1271,9 @@ export default function Header({
                   <>
                     <div className="signup-divider">
                       <span />
+
                       <small>{t("auth.orContinue")}</small>
+
                       <span />
                     </div>
 
@@ -1050,6 +1287,7 @@ export default function Header({
                       }
                     >
                       <strong>G</strong>
+
                       {t("auth.continueGoogle")}
                     </button>
                   </>
@@ -1083,16 +1321,19 @@ export default function Header({
                   <div className="signup-benefits">
                     <span>
                       <FiCheck />
+
                       {t("auth.favouriteCities")}
                     </span>
 
                     <span>
                       <FiCheck />
+
                       {t("auth.weatherAlerts")}
                     </span>
 
                     <span>
                       <FiCheck />
+
                       {t("auth.personalSettings")}
                     </span>
                   </div>

@@ -1,0 +1,112 @@
+.settings-success {
+    display: flex;
+    align-items: center;
+    gap: 8px;
+    margin-bottom: 18px;
+    padding: 14px 16px;
+    border-radius: 13px;
+    background: rgba(57, 179, 101, 0.12);
+    color: #42a96d;
+  }
+  
+  .settings-card {
+    margin-bottom: 20px;
+    padding: 26px;
+    border: 1px solid var(--border);
+    border-radius: 22px;
+    background: var(--bg);
+  }
+  
+  .settings-title-row {
+    display: flex;
+    align-items: center;
+    gap: 14px;
+    margin-bottom: 20px;
+  }
+  
+  .settings-title-row > svg {
+    font-size: 24px;
+    color: #e79650;
+  }
+  
+  .settings-title-row h2 {
+    margin: 0 0 5px;
+    color: var(--text-h);
+  }
+  
+  .settings-title-row p {
+    margin: 0;
+    color: var(--text);
+  }
+  
+  .settings-option-grid {
+    display: grid;
+    grid-template-columns: repeat(2, 1fr);
+    gap: 14px;
+  }
+  
+  .settings-option-grid button {
+    min-height: 110px;
+    display: flex;
+    flex-direction: column;
+    align-items: flex-start;
+    justify-content: center;
+    gap: 6px;
+    padding: 18px;
+    border: 1px solid var(--border);
+    border-radius: 16px;
+    background: transparent;
+    color: var(--text-h);
+    cursor: pointer;
+  }
+  
+  .settings-option-grid button.active {
+    border-color: #f4aa68;
+    background: rgba(244, 170, 104, 0.1);
+  }
+  
+  .settings-option-grid svg {
+    font-size: 23px;
+  }
+  
+  .settings-option-grid span {
+    color: var(--text);
+    font-size: 13px;
+  }
+  
+  .settings-segmented {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 10px;
+  }
+  
+  .settings-segmented button {
+    min-height: 42px;
+    padding: 0 16px;
+    border: 1px solid var(--border);
+    border-radius: 11px;
+    background: transparent;
+    color: var(--text-h);
+    cursor: pointer;
+  }
+  
+  .settings-segmented button.active {
+    border-color: #f4aa68;
+    background: #f4aa68;
+    color: #1b1714;
+  }
+  
+  .settings-save {
+    display: flex;
+    justify-content: flex-end;
+  }
+  
+  @media (max-width: 600px) {
+    .settings-option-grid {
+      grid-template-columns: 1fr;
+    }
+  
+    .settings-save button {
+      width: 100%;
+    }
+  }
