@@ -1,4 +1,5 @@
 import { useEffect, useState } from "react";
+
 import {
   FiUser,
   FiMenu,
@@ -20,11 +21,19 @@ import {
   FiHeart,
   FiGlobe,
   FiChevronDown,
+  FiTrash2,
+  FiWind,
+  FiCloudRain,
+  FiCloudLightning,
   FiPlayCircle,
 } from "react-icons/fi";
 
 import logo from "./logo-projekt.png";
 import { useLanguage } from "../context/LanguageContext.jsx";
+
+import "./Header.css";
+
+const NOTIFICATIONS_KEY = "weather-notifications";
 
 export default function Header({
   page,
@@ -37,16 +46,23 @@ export default function Header({
   const { language, setLanguage, t } = useLanguage();
 
   const [mobileOpen, setMobileOpen] = useState(false);
+
   const [profileOpen, setProfileOpen] = useState(false);
+
   const [languageOpen, setLanguageOpen] = useState(false);
 
+  const [notificationsOpen, setNotificationsOpen] = useState(false);
+
   const [authOpen, setAuthOpen] = useState(false);
+
   const [authMode, setAuthMode] = useState("signup");
 
   const [showPassword, setShowPassword] = useState(false);
+
   const [showConfirmPassword, setShowConfirmPassword] = useState(false);
 
   const [success, setSuccess] = useState(false);
+
   const [error, setError] = useState("");
 
   const [user, setUser] = useState(() => {
@@ -54,6 +70,168 @@ export default function Header({
       return JSON.parse(localStorage.getItem("weather-user")) || null;
     } catch {
       return null;
+    }
+  });
+
+  const [profile, setProfile] = useState(() => {
+    try {
+      return (
+        JSON.parse(localStorage.getItem("weather-profile")) || {
+          avatar: "",
+          city: "",
+          country: "",
+        }
+      );
+    } catch {
+      return {
+        avatar: "",
+        city: "",
+        country: "",
+      };
+    }
+  });
+
+  const notificationTranslations = {
+    en: {
+      notifications: "Notifications",
+      unread: "unread",
+      noNew: "No new notifications",
+      markAll: "Mark all as read",
+      clearAll: "Clear all notifications",
+
+      strongWind: "Strong wind",
+      strongWindText: "Wind gusts may reach 70 km/h.",
+
+      heavyRain: "Heavy rain",
+      heavyRainText: "Heavy rain is expected tomorrow morning.",
+
+      thunderstorm: "Thunderstorm",
+      thunderstormText: "Thunderstorms may develop in this area.",
+
+      noNotifications: "No notifications",
+      noNotificationsText: "Important weather warnings will appear here.",
+
+      viewAlerts: "View weather alerts",
+
+      today: "Today",
+      tomorrow: "Tomorrow",
+    },
+
+    de: {
+      notifications: "Benachrichtigungen",
+      unread: "ungelesen",
+      noNew: "Keine neuen Benachrichtigungen",
+      markAll: "Alle als gelesen markieren",
+      clearAll: "Alle Benachrichtigungen löschen",
+
+      strongWind: "Starker Wind",
+      strongWindText: "Windböen können 70 km/h erreichen.",
+
+      heavyRain: "Starker Regen",
+      heavyRainText: "Morgen früh wird starker Regen erwartet.",
+
+      thunderstorm: "Gewitter",
+      thunderstormText: "In dieser Region können sich Gewitter entwickeln.",
+
+      noNotifications: "Keine Benachrichtigungen",
+      noNotificationsText: "Wichtige Wetterwarnungen werden hier angezeigt.",
+
+      viewAlerts: "Wetterwarnungen anzeigen",
+
+      today: "Heute",
+      tomorrow: "Morgen",
+    },
+
+    uk: {
+      notifications: "Сповіщення",
+      unread: "непрочитаних",
+      noNew: "Немає нових сповіщень",
+      markAll: "Позначити все як прочитане",
+      clearAll: "Видалити всі сповіщення",
+
+      strongWind: "Сильний вітер",
+      strongWindText: "Пориви вітру можуть досягати 70 км/год.",
+
+      heavyRain: "Сильний дощ",
+      heavyRainText: "Завтра вранці очікується сильний дощ.",
+
+      thunderstorm: "Гроза",
+      thunderstormText: "У цьому районі можливе утворення гроз.",
+
+      noNotifications: "Немає сповіщень",
+      noNotificationsText:
+        "Тут будуть з'являтися важливі погодні попередження.",
+
+      viewAlerts: "Переглянути погодні попередження",
+
+      today: "Сьогодні",
+      tomorrow: "Завтра",
+    },
+
+    ru: {
+      notifications: "Уведомления",
+      unread: "непрочитанных",
+      noNew: "Нет новых уведомлений",
+      markAll: "Отметить всё как прочитанное",
+      clearAll: "Удалить все уведомления",
+
+      strongWind: "Сильный ветер",
+      strongWindText: "Порывы ветра могут достигать 70 км/ч.",
+
+      heavyRain: "Сильный дождь",
+      heavyRainText: "Завтра утром ожидается сильный дождь.",
+
+      thunderstorm: "Гроза",
+      thunderstormText: "В этом районе возможно образование гроз.",
+
+      noNotifications: "Нет уведомлений",
+      noNotificationsText:
+        "Здесь будут появляться важные погодные предупреждения.",
+
+      viewAlerts: "Посмотреть погодные предупреждения",
+
+      today: "Сегодня",
+      tomorrow: "Завтра",
+    },
+  };
+
+  const nt = notificationTranslations[language] || notificationTranslations.en;
+
+  const getDefaultNotifications = () => [
+    {
+      id: 1,
+      type: "wind",
+      city: "Berlin",
+      titleKey: "strongWind",
+      textKey: "strongWindText",
+      dayKey: "today",
+      time: "18:00",
+      read: false,
+    },
+
+    {
+      id: 2,
+      type: "rain",
+      city: "Kyiv",
+      titleKey: "heavyRain",
+      textKey: "heavyRainText",
+      dayKey: "tomorrow",
+      time: "09:00",
+      read: false,
+    },
+  ];
+
+  const [notifications, setNotifications] = useState(() => {
+    try {
+      const saved = JSON.parse(localStorage.getItem(NOTIFICATIONS_KEY));
+
+      if (Array.isArray(saved)) {
+        return saved;
+      }
+
+      return getDefaultNotifications();
+    } catch {
+      return getDefaultNotifications();
     }
   });
 
@@ -73,18 +251,21 @@ export default function Header({
       short: "EN",
       name: "English",
     },
+
     {
       code: "de",
       flag: "🇩🇪",
       short: "DE",
       name: "Deutsch",
     },
+
     {
       code: "uk",
       flag: "🇺🇦",
       short: "UA",
       name: "Українська",
     },
+
     {
       code: "ru",
       flag: "🇷🇺",
@@ -103,10 +284,6 @@ export default function Header({
   const currentLanguage =
     languages.find((item) => item.code === language) || languages[0];
 
-  /* =====================================================
-     RESPONSIVE
-  ===================================================== */
-
   useEffect(() => {
     const handleResize = () => {
       if (window.innerWidth > 768) {
@@ -123,13 +300,10 @@ export default function Header({
     };
   }, []);
 
-  /* =====================================================
-     MOBILE BODY LOCK
-  ===================================================== */
-
   useEffect(() => {
     if (!mobileOpen || window.innerWidth > 768) {
       document.body.style.overflow = "";
+
       return;
     }
 
@@ -142,26 +316,137 @@ export default function Header({
     };
   }, [mobileOpen]);
 
-  /* =====================================================
-     NAVIGATION
-  ===================================================== */
+  useEffect(() => {
+    const updateUserData = () => {
+      try {
+        const savedUser =
+          JSON.parse(localStorage.getItem("weather-user")) || null;
+
+        const savedProfile = JSON.parse(
+          localStorage.getItem("weather-profile")
+        ) || {
+          avatar: "",
+          city: "",
+          country: "",
+        };
+
+        setUser(savedUser);
+
+        setProfile(savedProfile);
+      } catch {
+        setUser(null);
+
+        setProfile({
+          avatar: "",
+          city: "",
+          country: "",
+        });
+      }
+    };
+
+    window.addEventListener("weather-user-updated", updateUserData);
+
+    window.addEventListener("storage", updateUserData);
+
+    return () => {
+      window.removeEventListener("weather-user-updated", updateUserData);
+
+      window.removeEventListener("storage", updateUserData);
+    };
+  }, []);
+
+  useEffect(() => {
+    localStorage.setItem(NOTIFICATIONS_KEY, JSON.stringify(notifications));
+  }, [notifications]);
+
+  const unreadCount = notifications.filter((item) => !item.read).length;
+
+  const markAllAsRead = () => {
+    setNotifications((prev) =>
+      prev.map((item) => ({
+        ...item,
+        read: true,
+      }))
+    );
+  };
+
+  const openNotification = (id) => {
+    setNotifications((prev) =>
+      prev.map((item) =>
+        item.id === id
+          ? {
+              ...item,
+              read: true,
+            }
+          : item
+      )
+    );
+  };
+
+  const clearNotifications = () => {
+    setNotifications([]);
+  };
+
+  const getNotificationIcon = (type) => {
+    if (type === "wind") {
+      return <FiWind />;
+    }
+
+    if (type === "rain") {
+      return <FiCloudRain />;
+    }
+
+    if (type === "storm") {
+      return <FiCloudLightning />;
+    }
+
+    return <FiBell />;
+  };
+
+  const getNotificationTitle = (item) => {
+    if (item.titleKey && nt[item.titleKey]) {
+      return nt[item.titleKey];
+    }
+
+    return item.title || nt.notifications;
+  };
+
+  const getNotificationText = (item) => {
+    if (item.textKey && nt[item.textKey]) {
+      return nt[item.textKey];
+    }
+
+    return item.text || "";
+  };
+
+  const getNotificationDay = (item) => {
+    if (item.dayKey && nt[item.dayKey]) {
+      return nt[item.dayKey];
+    }
+
+    return "";
+  };
+
+  const closeDropdowns = () => {
+    setProfileOpen(false);
+
+    setLanguageOpen(false);
+
+    setNotificationsOpen(false);
+  };
 
   const nav = (target) => {
     onNavigate?.(target);
 
     setMobileOpen(false);
-    setProfileOpen(false);
-    setLanguageOpen(false);
+
+    closeDropdowns();
 
     window.scrollTo({
       top: 0,
       behavior: "smooth",
     });
   };
-
-  /* =====================================================
-     AUTH
-  ===================================================== */
 
   const resetForm = () => {
     setForm({
@@ -174,9 +459,11 @@ export default function Header({
     });
 
     setShowPassword(false);
+
     setShowConfirmPassword(false);
 
     setError("");
+
     setSuccess(false);
   };
 
@@ -184,10 +471,23 @@ export default function Header({
     resetForm();
 
     setAuthMode(mode);
+
     setAuthOpen(true);
 
-    setProfileOpen(false);
-    setLanguageOpen(false);
+    closeDropdowns();
+
+    if (mode === "login") {
+      const rememberedEmail =
+        localStorage.getItem("weather-remember-email") || "";
+
+      if (rememberedEmail) {
+        setForm((prev) => ({
+          ...prev,
+          email: rememberedEmail,
+          remember: true,
+        }));
+      }
+    }
   };
 
   const closeAuth = () => {
@@ -195,69 +495,77 @@ export default function Header({
 
     setTimeout(() => {
       resetForm();
+
       setAuthMode("signup");
     }, 200);
   };
 
   const switchAuthMode = (mode) => {
     resetForm();
+
     setAuthMode(mode);
   };
-
-  /* =====================================================
-     SIGN UP
-  ===================================================== */
 
   const signup = () => {
     setError("");
 
     if (!form.username.trim()) {
       setError("Please enter your username.");
+
       return;
     }
 
     if (form.username.trim().length < 3) {
       setError("Username must contain at least 3 characters.");
+
       return;
     }
 
     if (!form.email.trim()) {
       setError("Please enter your email.");
+
       return;
     }
 
     if (!/^\S+@\S+\.\S+$/.test(form.email)) {
       setError("Please enter a valid email address.");
+
       return;
     }
 
     if (form.password.length < 8) {
       setError("Password must contain at least 8 characters.");
+
       return;
     }
 
     if (!/[A-Z]/.test(form.password)) {
       setError("Password must contain at least one capital letter.");
+
       return;
     }
 
     if (!/[0-9]/.test(form.password)) {
       setError("Password must contain at least one number.");
+
       return;
     }
 
     if (!/[^A-Za-z0-9]/.test(form.password)) {
       setError("Password must contain at least one special symbol.");
+
       return;
     }
 
     if (form.password !== form.confirmPassword) {
       setError("Passwords do not match.");
+
       return;
     }
 
     if (!form.terms) {
       setError("Please accept Terms and Privacy Policy.");
+
       return;
     }
 
@@ -280,25 +588,25 @@ export default function Header({
 
     setSuccess(true);
 
+    window.dispatchEvent(new Event("weather-user-updated"));
+
     setTimeout(() => {
       closeAuth();
     }, 1700);
   };
-
-  /* =====================================================
-     LOGIN
-  ===================================================== */
 
   const login = () => {
     setError("");
 
     if (!form.email.trim()) {
       setError("Please enter your email.");
+
       return;
     }
 
     if (!form.password) {
       setError("Please enter your password.");
+
       return;
     }
 
@@ -312,16 +620,19 @@ export default function Header({
 
     if (!savedAccount) {
       setError("No account found. Please create an account first.");
+
       return;
     }
 
     if (savedAccount.email.toLowerCase() !== form.email.trim().toLowerCase()) {
       setError("Incorrect email address.");
+
       return;
     }
 
     if (savedAccount.password !== form.password) {
       setError("Incorrect password.");
+
       return;
     }
 
@@ -342,20 +653,19 @@ export default function Header({
 
     setSuccess(true);
 
+    window.dispatchEvent(new Event("weather-user-updated"));
+
     setTimeout(() => {
       closeAuth();
     }, 1500);
   };
-
-  /* =====================================================
-     FORGOT PASSWORD
-  ===================================================== */
 
   const forgotPassword = () => {
     setError("");
 
     if (!form.email.trim()) {
       setError("Enter your email address first.");
+
       return;
     }
 
@@ -372,6 +682,7 @@ export default function Header({
       savedAccount.email.toLowerCase() !== form.email.trim().toLowerCase()
     ) {
       setError("We could not find an account with this email.");
+
       return;
     }
 
@@ -394,25 +705,29 @@ export default function Header({
     }
   };
 
-  /* =====================================================
-     LOGOUT
-  ===================================================== */
-
   const logout = () => {
     localStorage.removeItem("weather-user");
 
     setUser(null);
-    setProfileOpen(false);
-  };
 
-  /* =====================================================
-     PASSWORD STRENGTH
-  ===================================================== */
+    setProfileOpen(false);
+
+    setNotificationsOpen(false);
+
+    setMobileOpen(false);
+
+    onNavigate?.("home");
+
+    window.dispatchEvent(new Event("weather-user-updated"));
+  };
 
   const passwordChecks = {
     length: form.password.length >= 8,
+
     capital: /[A-Z]/.test(form.password),
+
     number: /[0-9]/.test(form.password),
+
     special: /[^A-Za-z0-9]/.test(form.password),
   };
 
@@ -433,8 +748,6 @@ export default function Header({
     <>
       <header className="site-header">
         <div className="header-inner container-wide">
-          {/* LOGO */}
-
           <button
             className="brand-button"
             type="button"
@@ -448,8 +761,6 @@ export default function Header({
               draggable="false"
             />
           </button>
-
-          {/* DESKTOP NAVIGATION */}
 
           <nav className="desktop-nav">
             <button
@@ -482,8 +793,6 @@ export default function Header({
               {t("nav.travel")}
             </button>
 
-            {/* NEW GAMES BUTTON */}
-
             <button
               className={
                 page === "games"
@@ -501,11 +810,7 @@ export default function Header({
             <a href="#contacts">{t("nav.contacts")}</a>
           </nav>
 
-          {/* HEADER TOOLS */}
-
           <div className="header-tools">
-            {/* LANGUAGE */}
-
             <div className="language-selector">
               <button
                 className="language-button"
@@ -514,6 +819,8 @@ export default function Header({
                   setLanguageOpen((value) => !value);
 
                   setProfileOpen(false);
+
+                  setNotificationsOpen(false);
                 }}
               >
                 <FiGlobe />
@@ -544,6 +851,7 @@ export default function Header({
                       className={language === item.code ? "active" : ""}
                       onClick={() => {
                         setLanguage(item.code);
+
                         setLanguageOpen(false);
                       }}
                     >
@@ -560,8 +868,6 @@ export default function Header({
               )}
             </div>
 
-            {/* UNIT */}
-
             <button
               className="unit-toggle"
               type="button"
@@ -569,8 +875,6 @@ export default function Header({
             >
               °{unit}
             </button>
-
-            {/* THEME */}
 
             <button
               className="icon-button theme-toggle"
@@ -581,20 +885,137 @@ export default function Header({
               {theme === "dark" ? <FiSun /> : <FiMoon />}
             </button>
 
-            {/* NOTIFICATION */}
-
             {user && (
-              <button
-                className="icon-button"
-                type="button"
-                title="Notifications"
-                onClick={() => nav("alerts")}
-              >
-                <FiBell />
-              </button>
-            )}
+              <div className="notifications-wrap">
+                <button
+                  className="icon-button notifications-button"
+                  type="button"
+                  title={nt.notifications}
+                  onClick={() => {
+                    setNotificationsOpen((value) => !value);
 
-            {/* SIGN UP */}
+                    setProfileOpen(false);
+
+                    setLanguageOpen(false);
+                  }}
+                >
+                  <FiBell />
+
+                  {unreadCount > 0 && (
+                    <span className="notification-badge">
+                      {unreadCount > 9 ? "9+" : unreadCount}
+                    </span>
+                  )}
+                </button>
+
+                {notificationsOpen && (
+                  <div className="notifications-dropdown glass-panel">
+                    <div className="notifications-header">
+                      <div>
+                        <strong>{nt.notifications}</strong>
+
+                        <span>
+                          {unreadCount > 0
+                            ? `${unreadCount} ${nt.unread}`
+                            : nt.noNew}
+                        </span>
+                      </div>
+
+                      {unreadCount > 0 && (
+                        <button
+                          type="button"
+                          title={nt.markAll}
+                          aria-label={nt.markAll}
+                          onClick={markAllAsRead}
+                        >
+                          <FiCheck />
+                        </button>
+                      )}
+                    </div>
+
+                    <div className="notifications-divider" />
+
+                    {notifications.length === 0 ? (
+                      <div className="notifications-empty">
+                        <FiBell />
+
+                        <strong>{nt.noNotifications}</strong>
+
+                        <p>{nt.noNotificationsText}</p>
+                      </div>
+                    ) : (
+                      <div className="notifications-list">
+                        {notifications.map((item) => (
+                          <button
+                            key={item.id}
+                            type="button"
+                            className={
+                              item.read
+                                ? "notification-item"
+                                : "notification-item unread"
+                            }
+                            onClick={() => openNotification(item.id)}
+                          >
+                            <span
+                              className={`notification-type-icon ${
+                                item.type || ""
+                              }`}
+                            >
+                              {getNotificationIcon(item.type)}
+                            </span>
+
+                            <span className="notification-content">
+                              <strong>{getNotificationTitle(item)}</strong>
+
+                              <small>{item.city}</small>
+
+                              <span>{getNotificationText(item)}</span>
+
+                              <time>
+                                {getNotificationDay(item)} {item.time}
+                              </time>
+                            </span>
+
+                            {!item.read && (
+                              <span className="notification-dot" />
+                            )}
+                          </button>
+                        ))}
+                      </div>
+                    )}
+
+                    <div className="notifications-divider" />
+
+                    <div className="notifications-footer">
+                      <button
+                        type="button"
+                        onClick={() => {
+                          setNotificationsOpen(false);
+
+                          nav("alerts");
+                        }}
+                      >
+                        <FiBell />
+
+                        {nt.viewAlerts}
+                      </button>
+
+                      {notifications.length > 0 && (
+                        <button
+                          type="button"
+                          className="notifications-clear"
+                          title={nt.clearAll}
+                          aria-label={nt.clearAll}
+                          onClick={clearNotifications}
+                        >
+                          <FiTrash2 />
+                        </button>
+                      )}
+                    </div>
+                  </div>
+                )}
+              </div>
+            )}
 
             {!user && (
               <button
@@ -606,8 +1027,6 @@ export default function Header({
               </button>
             )}
 
-            {/* LOGIN */}
-
             {!user && (
               <button
                 className="header-login-button"
@@ -618,14 +1037,14 @@ export default function Header({
               </button>
             )}
 
-            {/* PROFILE */}
-
             <div className="profile-wrap">
               <button
                 className="avatar-button"
                 type="button"
                 onClick={() => {
                   setLanguageOpen(false);
+
+                  setNotificationsOpen(false);
 
                   if (user) {
                     setProfileOpen((value) => !value);
@@ -634,14 +1053,30 @@ export default function Header({
                   }
                 }}
               >
-                <FiUser />
+                {user && profile.avatar ? (
+                  <img
+                    className="header-user-avatar-image"
+                    src={profile.avatar}
+                    alt={user.username || "User"}
+                  />
+                ) : (
+                  <FiUser />
+                )}
               </button>
 
               {user && profileOpen && (
                 <div className="profile-menu glass-panel">
                   <div className="profile-menu-top">
                     <div className="profile-menu-avatar">
-                      <FiUser />
+                      {profile.avatar ? (
+                        <img
+                          className="profile-menu-avatar-image"
+                          src={profile.avatar}
+                          alt={user.username || "User"}
+                        />
+                      ) : (
+                        <FiUser />
+                      )}
                     </div>
 
                     <div>
@@ -692,20 +1127,20 @@ export default function Header({
               )}
             </div>
 
-            {/* MOBILE BUTTON */}
-
             <button
               className="mobile-nav-toggle icon-button"
               type="button"
-              onClick={() => setMobileOpen((value) => !value)}
+              onClick={() => {
+                setMobileOpen((value) => !value);
+
+                closeDropdowns();
+              }}
               aria-label={mobileOpen ? "Close menu" : "Open menu"}
             >
               {mobileOpen ? <FiX /> : <FiMenu />}
             </button>
           </div>
         </div>
-
-        {/* MOBILE NAVIGATION */}
 
         {mobileOpen && (
           <nav className="mobile-nav mobile-nav-pro">
@@ -743,8 +1178,6 @@ export default function Header({
 
                 <span>{t("nav.travel")}</span>
               </button>
-
-              {/* GAMES MOBILE */}
 
               <button
                 className={page === "games" ? "active" : ""}
@@ -786,7 +1219,11 @@ export default function Header({
 
                   <span>{t("profile.weatherAlerts")}</span>
 
-                  <FiChevronDown className="mobile-row-arrow" />
+                  {unreadCount > 0 ? (
+                    <strong>{unreadCount}</strong>
+                  ) : (
+                    <FiChevronDown className="mobile-row-arrow" />
+                  )}
                 </button>
               )}
             </div>
@@ -797,7 +1234,15 @@ export default function Header({
               <>
                 <div className="mobile-user-card">
                   <div className="mobile-user-avatar">
-                    <FiUser />
+                    {profile.avatar ? (
+                      <img
+                        className="mobile-user-avatar-image"
+                        src={profile.avatar}
+                        alt={user.username || "User"}
+                      />
+                    ) : (
+                      <FiUser />
+                    )}
                   </div>
 
                   <div>
@@ -836,11 +1281,7 @@ export default function Header({
                 <button
                   type="button"
                   className="mobile-logout-button"
-                  onClick={() => {
-                    logout();
-
-                    setMobileOpen(false);
-                  }}
+                  onClick={logout}
                 >
                   <FiLogOut />
 
@@ -879,10 +1320,6 @@ export default function Header({
           </nav>
         )}
       </header>
-
-      {/* =====================================================
-          AUTH MODAL
-      ===================================================== */}
 
       {authOpen && (
         <div className="modal-backdrop" onMouseDown={closeAuth}>
@@ -989,8 +1426,6 @@ export default function Header({
                   </>
                 )}
 
-                {/* USERNAME */}
-
                 {authMode === "signup" && (
                   <label>
                     {t("auth.username")}
@@ -1002,8 +1437,8 @@ export default function Header({
                         type="text"
                         value={form.username}
                         onChange={(event) => {
-                          setForm((previous) => ({
-                            ...previous,
+                          setForm((prev) => ({
+                            ...prev,
 
                             username: event.target.value,
                           }));
@@ -1016,8 +1451,6 @@ export default function Header({
                   </label>
                 )}
 
-                {/* EMAIL */}
-
                 <label>
                   {t("auth.email")}
 
@@ -1028,8 +1461,8 @@ export default function Header({
                       type="email"
                       value={form.email}
                       onChange={(event) => {
-                        setForm((previous) => ({
-                          ...previous,
+                        setForm((prev) => ({
+                          ...prev,
 
                           email: event.target.value,
                         }));
@@ -1040,8 +1473,6 @@ export default function Header({
                     />
                   </div>
                 </label>
-
-                {/* PASSWORD */}
 
                 {authMode !== "forgot" && (
                   <label>
@@ -1054,8 +1485,8 @@ export default function Header({
                         type={showPassword ? "text" : "password"}
                         value={form.password}
                         onChange={(event) => {
-                          setForm((previous) => ({
-                            ...previous,
+                          setForm((prev) => ({
+                            ...prev,
 
                             password: event.target.value,
                           }));
@@ -1075,8 +1506,6 @@ export default function Header({
                     </div>
                   </label>
                 )}
-
-                {/* PASSWORD STRENGTH */}
 
                 {authMode === "signup" && form.password && (
                   <div className="password-info">
@@ -1127,8 +1556,6 @@ export default function Header({
                   </div>
                 )}
 
-                {/* CONFIRM PASSWORD */}
-
                 {authMode === "signup" && (
                   <>
                     <label>
@@ -1141,8 +1568,8 @@ export default function Header({
                           type={showConfirmPassword ? "text" : "password"}
                           value={form.confirmPassword}
                           onChange={(event) => {
-                            setForm((previous) => ({
-                              ...previous,
+                            setForm((prev) => ({
+                              ...prev,
 
                               confirmPassword: event.target.value,
                             }));
@@ -1175,16 +1602,14 @@ export default function Header({
                   </>
                 )}
 
-                {/* TERMS */}
-
                 {authMode === "signup" && (
                   <label className="signup-checkbox">
                     <input
                       type="checkbox"
                       checked={form.terms}
                       onChange={(event) =>
-                        setForm((previous) => ({
-                          ...previous,
+                        setForm((prev) => ({
+                          ...prev,
 
                           terms: event.target.checked,
                         }))
@@ -1220,8 +1645,6 @@ export default function Header({
                   </label>
                 )}
 
-                {/* LOGIN OPTIONS */}
-
                 {authMode === "login" && (
                   <div className="login-options">
                     <label className="signup-checkbox login-remember">
@@ -1229,8 +1652,8 @@ export default function Header({
                         type="checkbox"
                         checked={form.remember}
                         onChange={(event) =>
-                          setForm((previous) => ({
-                            ...previous,
+                          setForm((prev) => ({
+                            ...prev,
 
                             remember: event.target.checked,
                           }))
@@ -1250,11 +1673,7 @@ export default function Header({
                   </div>
                 )}
 
-                {/* ERROR */}
-
                 {error && <div className="signup-error">{error}</div>}
-
-                {/* SUBMIT */}
 
                 <button
                   className="accent-button modal-submit signup-submit-pro"
